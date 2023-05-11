@@ -1,11 +1,27 @@
 {
   "name": "grad23-fitnessapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "A fitness app that lets you record your workouts and track your progress.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JordanFalkBBD/Grad23-FitnessApp.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JordanFalkBBD/Grad23-FitnessApp/issues"
+  },
+  "homepage": "https://github.com/JordanFalkBBD/Grad23-FitnessApp#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "google-oauth2": "^0.1.0",
+    "passport": "^0.6.0",
+    "passport-google-oauth2": "^0.2.0"
+  }
 }
