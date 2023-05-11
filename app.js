@@ -23,14 +23,20 @@ app.get('/', (req, res) => {
 });
 
 app.get('/workout', isLoggedIn, (req, res) => {
-    res.send(`Welcome ${req.user.displayName}`);
+    res.send(`<p>Welcome ${req.user.displayName}</p> <a href="/logout">Logout</a>`);
 });
 
 app.get('/logout', (req, res) => {
-    req.logout();
-    req.session.destroy();
-    res.send('You have logged out!');
+    req.logout(function(err) {
+        if (err) {
+            res.send('An error occurred while logging you out.');
+        } else {
+            req.session.destroy();
+            res.send('<p>You have logged out!</p> <a href="/">Go to home</a>');
+        }
+    });
 });
+
 
 // Google authentication routes
 app.get('/auth/google',
