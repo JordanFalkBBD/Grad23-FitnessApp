@@ -45,7 +45,7 @@ Go
 USE FitnesAppDB;
 CREATE TABLE [dbo].[Excersizes](
     [ExcersizeID] [int] IDENTITY(1,1) NOT NULL,
-    [Name] [varchar](100) UNIQUE NOT NULL,
+    [Name] [varchar](100) NOT NULL,
 	[Weight] [int] NULL,
 	[Sets] [int] NULL,
 	[Reps] [int] NULL,
@@ -71,7 +71,7 @@ Go
 USE FitnesAppDB;
 CREATE TABLE [dbo].[Cardio](
     [CardioID] [int] IDENTITY(1,1) NOT NULL,
-    [Name] [varchar](100) UNIQUE NOT NULL,
+    [Name] [varchar](100) NOT NULL,
 	[Distance] [int] NULL,
 	[WorkoutID] [int] NULL,
 	[Date] [Date] NULL
