@@ -68,14 +68,19 @@ function getWorkoutsForUser(UserID) {
     return {
         workouts: [
             new Workout(2, "Upper Body", date),
-            new Workout(1, "Legs", date.setDate(date.getDate() - 1))
+            new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1)))
         ]
     }
 }
 
 
 function getWorkoutFromID(WorkoutID){
-    return new Workout(1, "Legs", date.setDate(date.getDate() - 1))
+    let date = new Date()
+    if (WorkoutID = 2) {
+        return new Workout(2, "Upper Body", date)
+    } else {
+        return new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1)))
+    }
 }
 
 module.exports = { getExercisesForWorkout,  getWorkoutsForUser, getWorkoutFromID };
