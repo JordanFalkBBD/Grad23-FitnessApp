@@ -103,6 +103,14 @@ app.get('/workout/info', isLoggedIn, (req, res) => {
 });
 
 
+app.get('/exercise/metrics/:type', (req, res) => {
+    var type = req.params.type;
+
+    console.log(type);
+    res.json(dal.getMetricUnitsForExercise(type))
+});
+
+
 app.get('/user', isLoggedIn, (req, res) => {
     let user = req.user.displayName
     res.json(user)
