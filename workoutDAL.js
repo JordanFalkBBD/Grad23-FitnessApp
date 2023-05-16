@@ -7,7 +7,7 @@ class Metric {
 }
 
 class Exercise {
-    constructor(id, name, ...metrics) {
+    constructor(id, name, metrics) {
         this.id = id
         this.name = name
         this.metrics = metrics
@@ -38,9 +38,8 @@ function getMetricUnitsForExercise(type){
 
 
 function getMetricsForExercise(ExerciseID){
-    return [
-        new Metric(5, "reps", 10), new Metric(4, "kg", 10)
-    ]
+    return [new Metric(5, "reps", 10), new Metric(4, "kg", 10)]
+    
 }
 
 
