@@ -12,7 +12,7 @@ class ProfileModal extends HTMLElement {
 
     const style = document.createElement("link");
     style.setAttribute("rel","stylesheet");
-    style.setAttribute("href","../components/profile-modal/profile-modal.css");
+    style.setAttribute("href","/components/profile-modal/profile-modal.css");
     const shadow = this.attachShadow({ mode: "open" });
 
     const profileContainer = document.createElement("section");
@@ -27,10 +27,10 @@ class ProfileModal extends HTMLElement {
     const unit = document.createElement('p');
     unit.textContent = "Metric";
     const slidingSection = document.createElement("img");
-    slidingSection.setAttribute("src", "../assets/arrow-right.svg");
+    slidingSection.setAttribute("src", "/assets/arrow-right.svg");
     slidingSection.setAttribute("alt","Slider indicator");
-    unitSlide.appendChild(unit);
     unitSlide.appendChild(slidingSection);
+    unitSlide.appendChild(unit);
     unitSlide.addEventListener("click", this.flipSwitch.bind(unit));
 
     const profileBar = document.createElement("figure");
@@ -46,6 +46,7 @@ class ProfileModal extends HTMLElement {
     signOut.classList.add('bottom-bar');
     signOut.type = "button";
     signOut.textContent = "Sign Out";
+    signOut.onclick = () => {history.pushState({},"","http://localhost:3000/logout"); history.go(0)};
 
     profileContainer.appendChild(profileBar);
     profileContainer.appendChild(unitLabel);

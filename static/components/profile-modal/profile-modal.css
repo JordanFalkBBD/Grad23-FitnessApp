@@ -1,7 +1,8 @@
 :root {
-  --slider-flex: row-reverse;
+  --slider-flex: row;
   --image-transform: rotate(0);
 }
+
 html {
   height: 100%;
   width: 100%;
@@ -63,7 +64,6 @@ profile-modal {
   height: 3em;
   display: flex;
   flex-direction: var(--slider-flex);
-  transition: 3s;
   justify-content: space-between;
   align-items: center;
   padding: 0;
