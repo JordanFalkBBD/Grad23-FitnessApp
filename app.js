@@ -102,6 +102,8 @@ app.get('/workout', isLoggedIn, (req, res) => {
 
 });
 
+app.use(express.static(__dirname + '/static'));
+
 app.get('/logout', (req, res) => {
     req.logout(function (err) {
         if (err) {
