@@ -1,6 +1,8 @@
-function getExercises() {
-
-}
+async function getExercises() {
+    return fetch("/exercises").then(
+        response => response.json()
+    )
+}   
 
 function searchExerciseNames() {
     // Start typing into input box, suggestions pop up to select from
@@ -120,3 +122,33 @@ function addExercise() {
     window.location.href = '/workout'
 }
 
+async function fillExercises(){
+    getExercises().then(
+        exercises => {
+            const exercises_view = document.getElementById("exercises")
+            for (let exercise of Object.keys(exercises)){
+                let e_li = document.createElement("li")
+                let ol = document.createElement("ul")
+                ol.textContent = exercise
+                
+                for (let set of exercises[exercise].reverse()) {
+                    let s_li = document.createElement("li")
+                    s_li.textContent = "SET " + String(set.number) + ":"
+                    
+                    for (let metric of set.metrics) {
+                        let p = document.createElement("p")
+                        p.textContent = String(metric.value) + " " + String(metric.unit)
+                        s_li.appendChild(p)
+                    }
+        
+                    ol.appendChild(s_li)
+                }
+        
+                e_li.appendChild(ol)
+                exercises_view.appendChild(e_li)
+            }
+        }
+    )
+}
+
+fillExercises()

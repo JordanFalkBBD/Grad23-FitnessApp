@@ -15,7 +15,7 @@ const app = express();
 
 // TODO: Add SESSION_SECRET to process.env
 const SESSION_SECRET = 'secret';
-app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true}));
+app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '\\public'));
@@ -60,22 +60,8 @@ app.get('/workout/prev', async function (req, res) {
 });
 
 
-app.get('/workout', isLoggedIn, (req, res) => {
-    req.session.userID = 0
-
-    let workouts = dal.getWorkoutsForUser(req.session.userID).workouts
-
-    let workout = undefined
-    if (req.session.currentWorkout === undefined) {
-        workout = workouts[0]
-        req.session.currentWorkout = workout.id
-    } else {
-        workout = dal.getWorkoutFromID(req.session.currentWorkout)
-    }
-
-
-    workout.date = date.format(workout.date, "dddd, D MMM")
-    let exercises = dal.getExercisesForWorkout(workout.id).exercises
+app.get('/exercises', isLoggedIn, (req, res) => {
+    let exercises = dal.getExercisesForWorkout(req.session.currentWorkout).exercises
     let grouped_exercises = {}
 
     for (let exercise of exercises) {
@@ -94,14 +80,37 @@ app.get('/workout', isLoggedIn, (req, res) => {
         grouped_exercises[exercise.name] = exercise_group
     }
 
+    res.json(grouped_exercises)
+})
+
+
+app.get('/workout/info', isLoggedIn, (req, res) => {
+    req.session.userID = 0
+
+    let workouts = dal.getWorkoutsForUser(req.session.userID).workouts
+
+    let workout = undefined
+    if (req.session.currentWorkout === undefined) {
+        workout = workouts[0]
+        req.session.currentWorkout = workout.id
+    } else {
+        workout = dal.getWorkoutFromID(req.session.currentWorkout)
+    }
+
+    workout.date = date.format(workout.date, "dddd, D MMM")
+
+    res.json(workout)
+});
+
+
+app.get('/user', isLoggedIn, (req, res) => {
     let user = req.user.displayName
+    res.json(user)
+});
 
-    res.render('workoutPage', {
-        workout: workout,
-        exercises: grouped_exercises,
-        user: user
-    });
 
+app.get('/workout', isLoggedIn, (req, res) => {
+    res.sendFile(__dirname + '/public/components/workout-page/workoutPage.html');
 });
 
 
@@ -119,8 +128,9 @@ app.get('/logout', (req, res) => {
 
 // Google authentication routes
 app.get('/auth/google',
-    passport.authenticate('google', { scope: ['email', 'profile']
- }
+    passport.authenticate('google', {
+        scope: ['email', 'profile']
+    }
     ));
 
 app.get('/auth/google/callback',
