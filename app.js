@@ -26,6 +26,8 @@ app.get('/workout', isLoggedIn, (req, res) => {
     res.send(`<p>Welcome ${req.user.displayName}</p> <a href="/logout">Logout</a>`);
 });
 
+app.use(express.static(__dirname + '/static'));
+
 app.get('/logout', (req, res) => {
     req.logout(function(err) {
         if (err) {
