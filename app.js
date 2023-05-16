@@ -15,7 +15,7 @@ const app = express();
 
 // TODO: Add SESSION_SECRET to process.env
 const SESSION_SECRET = 'secret';
-app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true, currentWorkout: undefined, userID: 1 }));
+app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '\\public'));
@@ -31,13 +31,13 @@ app.get('/', (req, res) => {
 
 app.get('/workout/next', async function (req, res) {
     // Retrieve the tag from our URL path
-    let workouts = dal.getWorkoutsForUser(session.get("userID")).workouts
+    let workouts = dal.getWorkoutsForUser(req.session.userID).workouts
 
-    current = session.get("currentWorkout")
+    current = req.session.currentWorkout
 
     for (let i = 1; i < workouts.length; i++) {
         if (workouts[i].id == current) {
-            session.set("currentWorkout", workouts[i - 1].id)
+            req.session.currentWorkout = workouts[i - 1].id
         }
     }
 
@@ -46,13 +46,13 @@ app.get('/workout/next', async function (req, res) {
 
 app.get('/workout/prev', async function (req, res) {
     // Retrieve the tag from our URL path
-    let workouts = dal.getWorkoutsForUser(session.get("userID")).workouts
+    let workouts = dal.getWorkoutsForUser(req.session.userID).workouts
 
-    current = session.get("currentWorkout")
+    current = req.session.currentWorkout
 
     for (let i = workouts.length; i > 1; i++) {
         if (workouts[i].id == current) {
-            session.set("currentWorkout", workouts[i + 1].id)
+            req.session.currentWorkout = workouts[i + 1].id
         }
     }
 
@@ -61,14 +61,16 @@ app.get('/workout/prev', async function (req, res) {
 
 
 app.get('/workout', isLoggedIn, (req, res) => {
-    let workouts = dal.getWorkoutsForUser(0).workouts
+    req.session.userID = 0
+
+    let workouts = dal.getWorkoutsForUser(req.session.userID).workouts
 
     let workout = undefined
-    if (session.get("currentWorkout") === undefined) {
+    if (req.session.currentWorkout === undefined) {
         workout = workouts[0]
-        session.set("currentWorkout", workout.id)
+        req.session.currentWorkout = workout.id
     } else {
-        workout = dal.getWorkoutFromID(session.get(currentWorkout))
+        workout = dal.getWorkoutFromID(req.session.currentWorkout)
     }
 
 
@@ -102,7 +104,6 @@ app.get('/workout', isLoggedIn, (req, res) => {
 
 });
 
-app.use(express.static(__dirname + '/static'));
 
 app.get('/logout', (req, res) => {
     req.logout(function (err) {
@@ -118,7 +119,8 @@ app.get('/logout', (req, res) => {
 
 // Google authentication routes
 app.get('/auth/google',
-    passport.authenticate('google', { scope: ['email', 'profile'] }
+    passport.authenticate('google', { scope: ['email', 'profile']
+ }
     ));
 
 app.get('/auth/google/callback',
