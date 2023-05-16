@@ -117,6 +117,6 @@ function addExercise() {
     .then((json) => console.log(json));
 
     // Reloads with hopefully that exercise added.
-    // window.location.href = '/workout'
+    window.location.href = '/workout'
 }
 
