@@ -15,7 +15,7 @@ const app = express();
 
 // TODO: Add SESSION_SECRET to process.env
 const SESSION_SECRET = 'secret';
-app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true }));
+app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true, currentWorkout: undefined, userID: 1 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '\\public'));
@@ -28,17 +28,59 @@ app.get('/', (req, res) => {
     res.send('<a href="/auth/google">Authenticate with Google</a>');
 });
 
+
+app.get('/workout/next', async function (req, res) {
+    // Retrieve the tag from our URL path
+    let workouts = dal.getWorkoutsForUser(session.get("userID")).workouts
+
+    current = session.get("currentWorkout")
+
+    for (let i = 1; i < workouts.length; i++) {
+        if (workouts[i].id == current) {
+            session.set("currentWorkout", workouts[i - 1].id)
+        }
+    }
+
+    res.redirect("/workout")
+});
+
+app.get('/workout/prev', async function (req, res) {
+    // Retrieve the tag from our URL path
+    let workouts = dal.getWorkoutsForUser(session.get("userID")).workouts
+
+    current = session.get("currentWorkout")
+
+    for (let i = workouts.length; i > 1; i++) {
+        if (workouts[i].id == current) {
+            session.set("currentWorkout", workouts[i + 1].id)
+        }
+    }
+
+    res.redirect("/workout")
+});
+
+
 app.get('/workout', isLoggedIn, (req, res) => {
-    let workout = dal.getWorkoutsForUser(0).workouts[0]
-    workout.date = date.format(workout.date, "dddd, D MMM") 
+    let workouts = dal.getWorkoutsForUser(0).workouts
+
+    let workout = undefined
+    if (session.get("currentWorkout") === undefined) {
+        workout = workouts[0]
+        session.set("currentWorkout", workout.id)
+    } else {
+        workout = dal.getWorkoutFromID(session.get(currentWorkout))
+    }
+
+
+    workout.date = date.format(workout.date, "dddd, D MMM")
     let exercises = dal.getExercisesForWorkout(workout.id).exercises
     let grouped_exercises = {}
 
     for (let exercise of exercises) {
         if (!(exercise.name in grouped_exercises)) {
             grouped_exercises[exercise.name] = []
-        } 
-        
+        }
+
         let exercise_group = grouped_exercises[exercise.name]
 
         let set = {
