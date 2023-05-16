@@ -23,18 +23,40 @@ class Workout {
 }
 
 
+const cardio = ["cardio"]
+
+const weights = ["olympic_weightlifting", "powerlifting", "strength"]
+
+
+function getMetricUnitsForExercise(type){
+    if (weights.includes(type)){
+        return ["kg", "reps"]
+    } else if (cardio.includes(type)){
+        return ["m"]
+    }
+}
+
+
+function getMetricsForExercise(ExerciseID){
+    return [
+        new Metric(5, "reps", 10), new Metric(4, "kg", 10)
+    ]
+}
+
+
 function getExercisesForWorkout(WorkoutID) {
     // newest to oldest exercise in workout
+
     return {
         exercises: [
            new Exercise(
-            3, "barbell lifts", new Metric(5, "reps", 10), new Metric(4, "weight (kg)", 10)
+            3, "barbell lifts", getMetricsForExercise(3)
            ),
            new Exercise(
-            2, "barbell lifts", new Metric(3, "reps", 10), new Metric(2, "weight (kg)", 15)
+            2, "barbell lifts", getMetricsForExercise(2)
            ),
            new Exercise(
-            1, "push ups", new Metric(1, "reps", 15)
+            1, "push ups", getMetricsForExercise(1)
            )
         ]
     }
@@ -52,4 +74,8 @@ function getWorkoutsForUser(UserID) {
 }
 
 
-module.exports = { getExercisesForWorkout,  getWorkoutsForUser };
+function getWorkoutFromID(WorkoutID){
+    return new Workout(1, "Legs", date.setDate(date.getDate() - 1))
+}
+
+module.exports = { getExercisesForWorkout,  getWorkoutsForUser, getWorkoutFromID };
