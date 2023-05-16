@@ -22,6 +22,10 @@ profile-modal {
   max-width: 425px;
 }
 
+.modal-container.hidden {
+  display: none;
+}
+
 .modal-container label {
   font-size: x-large;
 }
@@ -57,6 +61,19 @@ profile-modal {
   flex: 3 0 auto;
   text-align: center;
   font-size: x-large;
+}
+
+.profile-info button {
+  width: 2em;
+  height: 2em;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 0.1em;
+  margin-left: 0.5em;
+  color: white;
+  text-align: center;
+  font-size: x-large;
+  padding: auto 0;
 }
 
 .slider {
