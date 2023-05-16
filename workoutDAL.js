@@ -29,11 +29,13 @@ const weights = ["olympic_weightlifting", "powerlifting", "strength"]
 
 
 function getMetricUnitsForExercise(type){
+    type = String(type).toLowerCase()
     if (weights.includes(type)){
         return ["kg", "reps"]
     } else if (cardio.includes(type)){
         return ["m"]
     }
+    return ["None"]
 }
 
 
@@ -82,4 +84,4 @@ function getWorkoutFromID(WorkoutID){
     }
 }
 
-module.exports = { getExercisesForWorkout,  getWorkoutsForUser, getWorkoutFromID };
+module.exports = { getExercisesForWorkout,  getWorkoutsForUser, getWorkoutFromID, getMetricUnitsForExercise };
