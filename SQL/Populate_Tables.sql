@@ -1,10 +1,11 @@
 --Inserting data into the Users table
 USE FitnesAppDB;
 INSERT INTO [dbo].[Users]
-           ([Username]
+           ([Email],
+		   [Metric]
            )
-VALUES ('slapstick42'),
-('fortnight73')
+VALUES ('slapstick42@gmal.com', 1),
+('fortnight73@gmail.com', 0)
 GO
 
 --Inserting data into the Workout table
