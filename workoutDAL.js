@@ -7,7 +7,7 @@ class Metric {
 }
 
 class Exercise {
-    constructor(id, name, ...metrics) {
+    constructor(id, name, metrics) {
         this.id = id
         this.name = name
         this.metrics = metrics
@@ -29,18 +29,19 @@ const weights = ["olympic_weightlifting", "powerlifting", "strength"]
 
 
 function getMetricUnitsForExercise(type){
+    type = String(type).toLowerCase()
     if (weights.includes(type)){
         return ["kg", "reps"]
     } else if (cardio.includes(type)){
         return ["m"]
     }
+    return ["None"]
 }
 
 
 function getMetricsForExercise(ExerciseID){
-    return [
-        new Metric(5, "reps", 10), new Metric(4, "kg", 10)
-    ]
+    return [new Metric(5, "reps", 10), new Metric(4, "kg", 10)]
+    
 }
 
 
@@ -68,14 +69,19 @@ function getWorkoutsForUser(UserID) {
     return {
         workouts: [
             new Workout(2, "Upper Body", date),
-            new Workout(1, "Legs", date.setDate(date.getDate() - 1))
+            new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1)))
         ]
     }
 }
 
 
 function getWorkoutFromID(WorkoutID){
-    return new Workout(1, "Legs", date.setDate(date.getDate() - 1))
+    let date = new Date()
+    if (WorkoutID = 2) {
+        return new Workout(2, "Upper Body", date)
+    } else {
+        return new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1)))
+    }
 }
 
-module.exports = { getExercisesForWorkout,  getWorkoutsForUser, getWorkoutFromID };
+module.exports = { getExercisesForWorkout,  getWorkoutsForUser, getWorkoutFromID, getMetricUnitsForExercise };
