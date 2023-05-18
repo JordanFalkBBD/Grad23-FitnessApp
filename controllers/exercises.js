@@ -4,7 +4,7 @@ const dal = require("../models/workoutDAL");
 
 router.get("/", (req, res) => {
   let exercises = dal.getExercisesForWorkout(
-    req.session.currentWorkout
+    req.session.currentWorkoutId
   ).exercises;
   let grouped_exercises = {};
 
@@ -31,8 +31,6 @@ router.get("/", (req, res) => {
 
 router.get("/metrics/:type", (req, res) => {
   var type = req.params.type;
-
-  console.log(type);
   res.json(dal.getMetricUnitsForExercise(type));
 });
 

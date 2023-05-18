@@ -2,6 +2,15 @@ async function getExercises() {
   return fetch("/exercises").then((response) => response.json());
 }
 
+async function getWorkout() {
+  return fetch("/workout/info").then((response) => response.json());
+}
+
+function updateWorkoutName() {
+  const name = document.getElementById("workout_name")
+  fetch("/workout/update/name/" + name)
+}
+
 function searchExerciseNames() {
   // Start typing into input box, suggestions pop up to select from
   const input = document.getElementById("add_exercise_name").value;
@@ -9,14 +18,9 @@ function searchExerciseNames() {
   let add_exercise_metrics = document.getElementById("add_exercise_metrics");
   add_exercise_metrics.innerHTML = "";
 
-  fetch(" https://api.api-ninjas.com/v1/exercises?name=" + input, {
-    headers: {
-      "X-Api-Key": "ADD NINJA API KEY HERE TODO: CONFIG OR SOMETHING",
-    },
-  })
+  fetch("/ninja/" + input)
     .then((response) => response.json())
     .then((response) => {
-      console.log(response);
       let results = [];
       for (let result of response) {
         results.push({ name: result.name, type: result.type });
@@ -52,7 +56,7 @@ function selectExerciseName(name, type) {
   // Picked an exercise name,
   // expands add to have all the required metric fields
   // search bar has that exercise name filled into it.
-  fetch("/exercise/metrics/" + type)
+  fetch("/exercises/metrics/" + type)
     .then((response) => response.json())
     .then((metrics) => {
       let add_exercise_metrics = document.getElementById(
@@ -74,20 +78,19 @@ function selectExerciseName(name, type) {
         metric_input.name = metric;
         metric_input.classList.add("metric_input");
 
+
         div.appendChild(metric_input);
         add_exercise_metrics.appendChild(div);
       }
 
       let div = document.createElement("div");
-      let add_exercise_button = document.createElement("input");
-      add_exercise_button.required = true;
-      add_exercise_button.type = "button";
-      add_exercise_button.name = "add_exercise";
-      add_exercise_button.value = "Add";
+      let submit_button = document.createElement("input");
+      submit_button.required = true;
+      submit_button.type = "submit";
+      submit_button.name = "submit";
+      submit_button.value = "+";
 
-      add_exercise_button.addEventListener("click", addExercise);
-
-      div.appendChild(add_exercise_button);
+      div.appendChild(submit_button);
 
       add_exercise_metrics.appendChild(div);
     });
@@ -99,7 +102,10 @@ function selectExerciseName(name, type) {
 }
 
 function addExercise() {
-  const exercise_name = document.getElementById("add_exercise_name").value;
+  const exercise_name_input = document.getElementById("add_exercise_name");
+  const exercise_name = exercise_name_input.value
+  exercise_name_input.value = ""
+  
   let metrics = document.getElementsByClassName("metric_input");
   let values = [];
   for (let metric of metrics) {
@@ -109,11 +115,15 @@ function addExercise() {
     });
   }
 
-  // Filled in all metrics
-  console.log({ exercise_name: exercise_name });
-  console.log(values);
+  let add_exercise_metrics = document.getElementById(
+    "add_exercise_metrics"
+  );
 
-  fetch("/add_exercise", {
+  add_exercise_metrics.innerHTML = ""
+
+  
+
+  fetch("/exercises/add", {
     method: "POST",
     body: {
       exercise_name: exercise_name,
@@ -123,38 +133,58 @@ function addExercise() {
       "Content-type": "application/json; charset=UTF-8",
     },
   })
-    // .then((response) => response.json())
     .then((json) => console.log(json));
 
   // Reloads with hopefully that exercise added.
-  window.location.href = "/workout";
+  fillExercises()
+}
+
+
+async function insertMetrics(parent, metrics) {
+  for (let metric of metrics) {
+    let metric_info = document.createElement("p");
+    metric_info.textContent = String(metric.value) + " " + String(metric.unit);
+    parent.appendChild(metric_info);
+  }
+}
+
+async function insertSetOfExercises(parent, exercise) {
+  for (let set of exercise) {
+    let exercise_info = document.createElement("li");
+    exercise_info.textContent = "SET " + String(set.number) + ":";
+    insertMetrics(exercise_info, set.metrics)
+    parent.appendChild(exercise_info);
+  }
 }
 
 async function fillExercises() {
+  const exercises_view = document.getElementById("exercises");
+
+  exercises_view.innerHTML = "";
+
   getExercises().then((exercises) => {
-    const exercises_view = document.getElementById("exercises");
     for (let exercise of Object.keys(exercises)) {
       let e_li = document.createElement("li");
-      let ol = document.createElement("ul");
-      ol.textContent = exercise;
-
-      for (let set of exercises[exercise].reverse()) {
-        let s_li = document.createElement("li");
-        s_li.textContent = "SET " + String(set.number) + ":";
-
-        for (let metric of set.metrics) {
-          let p = document.createElement("p");
-          p.textContent = String(metric.value) + " " + String(metric.unit);
-          s_li.appendChild(p);
-        }
-
-        ol.appendChild(s_li);
-      }
-
-      e_li.appendChild(ol);
+      let set_of_exercises = document.createElement("ul");
+      set_of_exercises.textContent = exercise;
+      insertSetOfExercises(set_of_exercises, exercises[exercise].reverse())
+      e_li.appendChild(set_of_exercises);
       exercises_view.appendChild(e_li);
     }
   });
 }
 
+
+async function fillWorkout() {
+  getWorkout().then(workout => {
+    workout_date = document.getElementById("workout_date")
+    workout_date.innerHTML = String(workout.date) + " : "
+    workout_name = document.getElementById("workout_name")
+    workout_name.value = workout.name
+  }
+  )
+}
+
+fillWorkout();
 fillExercises();
+
