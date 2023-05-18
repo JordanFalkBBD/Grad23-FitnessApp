@@ -14,14 +14,6 @@ body {
   margin: 0;
 }
 
-profile-modal {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  z-index: 1;
-  max-width: 425px;
-}
-
 .modal-container.hidden {
   display: none;
 }
@@ -36,6 +28,14 @@ profile-modal {
   align-items: center;
   justify-content: space-between;
   flex: 1;
+  height: 100%;
+  z-index: 1;
+  width: 100%;
+  max-width: 425px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: whitesmoke;
 }
 
 .profile-info {
@@ -50,14 +50,12 @@ profile-modal {
   padding: 0.3em 0;
 }
 
-.profile-info img {
-  width: 3em;
-  height: 3em;
-  border-radius: 50%;
-  margin-right: 1em;
+.profile-info button img {
+  width: 100%;
+  height: 100%;
 }
 
-.profile-info figcaption {
+.profile-info p {
   flex: 3 0 auto;
   text-align: center;
   font-size: x-large;
@@ -67,10 +65,9 @@ profile-modal {
   width: 2em;
   height: 2em;
   background-color: transparent;
-  border: 1px solid white;
-  border-radius: 0.1em;
-  margin-left: 0.5em;
-  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  margin-right: 1em;
   text-align: center;
   font-size: x-large;
   padding: auto 0;
