@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fitness Tracker</title>
+    <link rel="stylesheet" href="/assets/global.css" />
+    <link rel="stylesheet" href="/components/summary-page/summaryPage.css" />
+  </head>
+
+  <body>
+    <section class="grid-container">
+      <section>
+        <h6>Graph Title Here</h6>
+        <canvas id="summary"></canvas>
+      </section>
+      <section>
+        <h6>Table Title Here</h6>
+        <table id="summary-table">
+          <thead>
+            <th>Year</th>
+            <th>Count</th>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      type="module"
+      src="/components/summary-page/summaryPage.js"
+    ></script>
+  </body>
+</html>
