@@ -7,6 +7,7 @@ const routes = require("./controllers/index");
 const auth = require("./controllers/auth");
 const workout = require("./controllers/workout");
 const exercises = require("./controllers/exercises");
+const summary = require("./controllers/summary");
 const isLoggedIn = require("./controllers/middleware");
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, "views")));
 
 // Routes
 app.use("/", routes);
+app.use("/summary", isLoggedIn, summary);
 app.use("/workout", isLoggedIn, workout);
 app.use("/exercises", exercises);
 
