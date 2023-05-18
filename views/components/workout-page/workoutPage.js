@@ -1,3 +1,6 @@
+// TODO: extract to env or config
+const NINJA_API_KEY = "ggutd45z+JF1zHIFemjfpQ==S5eWla6TxzazEdqO";
+
 async function getExercises() {
   return fetch("/exercises").then((response) => response.json());
 }
@@ -11,7 +14,7 @@ function searchExerciseNames() {
 
   fetch(" https://api.api-ninjas.com/v1/exercises?name=" + input, {
     headers: {
-      "X-Api-Key": "ADD NINJA API KEY HERE TODO: CONFIG OR SOMETHING",
+      "X-Api-Key": NINJA_API_KEY,
     },
   })
     .then((response) => response.json())
@@ -52,7 +55,7 @@ function selectExerciseName(name, type) {
   // Picked an exercise name,
   // expands add to have all the required metric fields
   // search bar has that exercise name filled into it.
-  fetch("/exercise/metrics/" + type)
+  fetch("/exercises/metrics/" + type)
     .then((response) => response.json())
     .then((metrics) => {
       let add_exercise_metrics = document.getElementById(
@@ -113,7 +116,7 @@ function addExercise() {
   console.log({ exercise_name: exercise_name });
   console.log(values);
 
-  fetch("/add_exercise", {
+  fetch("/exercises/add", {
     method: "POST",
     body: {
       exercise_name: exercise_name,
