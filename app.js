@@ -10,7 +10,7 @@ const exercises = require("./controllers/exercises");
 const summary = require("./controllers/summary");
 const ninja = require("./controllers/ninja");
 const isLoggedIn = require("./controllers/middleware");
-const config = require("./config")
+const config = require("./config");
 
 const app = express();
 

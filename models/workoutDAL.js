@@ -65,24 +65,24 @@ function getWorkoutsForUser(UserID) {
 function getWorkoutFromID(WorkoutID) {
   let date = new Date();
 
-  if ((WorkoutID == 2)) {
+  if (WorkoutID == 2) {
     return new Workout(2, "Upper Body", date);
   }
-  
+
   return new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1)));
 }
 
-function addNewWorkout(userID ,date, name){
-  let workout = new Workout(99, name, date) //newly created workout's ID
+function addNewWorkout(userID, date, name) {
+  let workout = new Workout(99, name, date); //newly created workout's ID
 
-  return workout
+  return workout;
 }
 
-function updateWorkoutName(WorkoutID, newName){
-  //TODO: name changed  
+function updateWorkoutName(WorkoutID, newName) {
+  //TODO: name changed
 }
 
-function getUserID(){
+function getUserID() {
   return 0;
 }
 
@@ -93,5 +93,5 @@ module.exports = {
   getMetricUnitsForExercise,
   addNewWorkout,
   updateWorkoutName,
-  getUserID
+  getUserID,
 };
