@@ -1,6 +1,3 @@
-// TODO: extract to env or config
-const NINJA_API_KEY = "ggutd45z+JF1zHIFemjfpQ==S5eWla6TxzazEdqO";
-
 async function getExercises() {
   return fetch("/exercises").then((response) => response.json());
 }
