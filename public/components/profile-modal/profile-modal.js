@@ -6,18 +6,35 @@ class ProfileModal extends HTMLElement {
 
   unit;
 
-  flipSwitch = function() {
+  flipSwitch = function () {
     const root = document.querySelector(":root");
-    root.style.setProperty("--slider-flex", getComputedStyle(root).getPropertyValue("--slider-flex") === "row-reverse" ? "row" : "row-reverse");
-    root.style.setProperty("--image-transform", getComputedStyle(root).getPropertyValue("--image-transform") === "rotate(180deg)" ? "none" : "rotate(180deg)");
-    this.unit.textContent = this.unit.textContent === "Metric" ? "Imperial" : "Metric";
-  }
+    root.style.setProperty(
+      "--slider-flex", 
+      getComputedStyle(root).getPropertyValue("--slider-flex") === "row-reverse" 
+      ? "row" 
+      : "row-reverse"
+    );
+    root.style.setProperty(
+      "--image-transform", 
+      getComputedStyle(root).getPropertyValue("--image-transform") === "rotate(180deg)" 
+      ? "none" 
+      : "rotate(180deg)"
+    );
+    this.unit.textContent = 
+      this.unit.textContent === "Metric" 
+      ? "Imperial" 
+      : "Metric";
+  };
 
-  hideModal = function() {
+  hideModal = function () {
     this.profileContainer?.classList.add("hidden");
-  }
+  };
 
-  setState = function(username,metric) {
+  showModal = function () {
+    this.profileContainer?.classList.remove("hidden");
+  };
+
+  setState = function (username,metric) {
     this.userName.textContent=username;
     if (!metric) {
       this.unit.textContent = "Imperial"
@@ -25,18 +42,14 @@ class ProfileModal extends HTMLElement {
       root.style.setProperty("--slider-flex","row-reverse");
       root.style.setProperty("--image-transform","rotate(180deg)");
     }
-  }
+  };
 
-  showModal = function() {
-    this.profileContainer?.classList.remove("hidden");
-  }
-
-  constructor () {
+  constructor() {
     super();
 
     const style = document.createElement("link");
-    style.setAttribute("rel","stylesheet");
-    style.setAttribute("href","/components/profile-modal/profile-modal.css");
+    style.setAttribute("rel", "stylesheet");
+    style.setAttribute("href", "/components/profile-modal/profile-modal.css");
     const shadow = this.attachShadow({ mode: "open" });
 
     this.profileContainer = document.createElement("section");
@@ -49,11 +62,11 @@ class ProfileModal extends HTMLElement {
     unitSlide.classList.add("slider");
     unitSlide.id = "unitSlider";
     unitSlide.type = "button";
-    this.unit = document.createElement('p');
+    this.unit = document.createElement("p");
     this.unit.textContent = "Metric";
     const slidingSection = document.createElement("img");
     slidingSection.setAttribute("src", "/assets/arrow-right.svg");
-    slidingSection.setAttribute("alt","Toggle");
+    slidingSection.setAttribute("alt", "Toggle");
     unitSlide.appendChild(slidingSection);
     unitSlide.appendChild(this.unit);
     unitSlide.onclick = () => this.flipSwitch();
@@ -62,20 +75,23 @@ class ProfileModal extends HTMLElement {
     profileBar.classList.add("profile-info");
     const closeIcon = document.createElement("img");
     closeIcon.setAttribute("src", "/assets/close.svg")
-    closeIcon.setAttribute("alt","Close");
+    closeIcon.setAttribute("alt", "Close");
     this.userName = document.createElement("p");
     const minimize = document.createElement("button");
-    minimize.type="button";
+    minimize.type = "button";
     minimize.onclick = () => this.hideModal();
     minimize.appendChild(closeIcon);
     profileBar.appendChild(minimize);
     profileBar.appendChild(this.userName);
 
     const signOut = document.createElement("button")
-    signOut.classList.add('bottom-bar');
+    signOut.classList.add("bottom-bar");
     signOut.type = "button";
     signOut.textContent = "Sign Out";
-    signOut.onclick = () => {history.pushState({},"","http://localhost:3000/logout"); history.go(0)};
+    signOut.onclick = () => {
+      history.pushState({}, "", "http://localhost:3000/logout");
+      history.go(0)
+    };
 
     this.profileContainer.appendChild(profileBar);
     this.profileContainer.appendChild(unitLabel);
@@ -86,4 +102,4 @@ class ProfileModal extends HTMLElement {
   }
 }
 
-customElements.define('profile-modal', ProfileModal)
+customElements.define("profile-modal", ProfileModal)
