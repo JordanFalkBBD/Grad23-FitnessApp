@@ -8,7 +8,8 @@ GO
 USE FitnesAppDB;
 CREATE TABLE [dbo].[Users](
     [UserID] [int] IDENTITY(1,1) NOT NULL,
-    [Username] [varchar](100) UNIQUE NOT NULL,
+    [Email] [varchar](100) UNIQUE NOT NULL,
+	[Metric] [bit] NOT NULL
 );
 GO
 
