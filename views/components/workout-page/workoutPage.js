@@ -9,7 +9,6 @@ function searchExerciseNames() {
   let add_exercise_metrics = document.getElementById("add_exercise_metrics");
   add_exercise_metrics.innerHTML = "";
 
-  //TODO: Send input to exercise api, setup list of matches as links.
   fetch(" https://api.api-ninjas.com/v1/exercises?name=" + input, {
     headers: {
       "X-Api-Key": "ADD NINJA API KEY HERE TODO: CONFIG OR SOMETHING",
