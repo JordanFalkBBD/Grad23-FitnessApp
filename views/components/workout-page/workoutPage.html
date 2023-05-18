@@ -13,7 +13,10 @@
 
     <navbar>
       <button onclick="window.location.href='/workout/prev';">Prev</button>
-      <span id="workout_info"></span>
+      <form id="workout_info">
+          <label id="workout_date">Date : </label>
+          <input id="workout_name" type="text" maxlength="20" value="Workout Name" onkeyup="updateWorkoutName();">
+      </form>
       <button onclick="window.location.href='/workout/next';">Next</button>
     </navbar>
 
@@ -26,7 +29,7 @@
         onkeyup="searchExerciseNames();"
       />
       <div id="add_exercise_name_dropdown"></div>
-      <form id="add_exercise_metrics"></form>
+      <form id="add_exercise_metrics" action="javascript:addExercise()"></form>
     </section>
 
     <ul id="exercises"></ul>
