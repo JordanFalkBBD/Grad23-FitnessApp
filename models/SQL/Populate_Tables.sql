@@ -19,9 +19,9 @@ VALUES ('wk1','1','2022-02-17'),
 ('wk2', '2','2022-02-18')
 GO
 
---Inserting data into the Excersizes table
+--Inserting data into the Excersises table
 USE FitnesAppDB;
-INSERT INTO [dbo].[Excersizes]
+INSERT INTO [dbo].[Excersises]
            ([Name],
 		   [Weight],
 		   [Sets],
