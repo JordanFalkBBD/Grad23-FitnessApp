@@ -1,6 +1,10 @@
 class ProfileModal extends HTMLElement {
   profileContainer;
 
+  unit;
+
+  userName;
+
   flipSwitch = function () {
     const root = document.querySelector(":root");
     root.style.setProperty(
@@ -16,7 +20,7 @@ class ProfileModal extends HTMLElement {
         ? "none"
         : "rotate(180deg)"
     );
-    this.textContent = this.textContent === "Metric" ? "Imperial" : "Metric";
+    this.unit.textContent = this.unit.textContent === "Metric" ? "Imperial" : "Metric";
   };
 
   hideModal = function () {
@@ -26,6 +30,22 @@ class ProfileModal extends HTMLElement {
   showModal = function () {
     this.profileContainer?.classList.remove("hidden");
   };
+
+  setState = function (username, metric) {
+    this.userName.textContent = username;
+    if (!metric) {
+      const root = document.querySelector(":root");
+      root.style.setProperty("--slider-flex", "row-reverse");
+      root.style.setProperty("--image-transform", "rotate(180deg)")
+      this.unit.textContent = "Imperial";
+    }
+    else {
+      const root = document.querySelector(":root");
+      root.style.setProperty("--slider-flex", "row");
+      root.style.setProperty("--image-transform", "none")
+      this.unit.textContent = "Metric";
+    }
+  }
 
   constructor() {
     super();
@@ -42,6 +62,7 @@ class ProfileModal extends HTMLElement {
 
     this.profileContainer = document.createElement("section");
     this.profileContainer.classList.add("modal-container");
+    this.profileContainer.classList.add("hidden");
 
     const unitLabel = document.createElement("label");
     unitLabel.textContent = "Units:";
@@ -49,28 +70,26 @@ class ProfileModal extends HTMLElement {
     unitSlide.classList.add("slider");
     unitSlide.id = "unitSlider";
     unitSlide.type = "button";
-    const unit = document.createElement("p");
-    unit.textContent = "Metric";
+    this.unit = document.createElement("p");
+    this.unit.textContent = "Metric";
     const slidingSection = document.createElement("img");
     slidingSection.setAttribute("src", "/assets/arrow-right.svg");
     slidingSection.setAttribute("alt", "Slider indicator");
     unitSlide.appendChild(slidingSection);
-    unitSlide.appendChild(unit);
-    unitSlide.onclick = this.flipSwitch.bind(unit);
+    unitSlide.appendChild(this.unit);
+    unitSlide.onclick = () => this.flipSwitch();
 
-    const profileBar = document.createElement("figure");
+    const profileBar = document.createElement("article");
     profileBar.classList.add("profile-info");
-    const userPhoto = document.createElement("img");
-    userPhoto.setAttribute("alt", "Profile photo");
-    const userName = document.createElement("figcaption");
-    userName.textContent = "{username}";
-    const minimize = document.createElement("button");
-    minimize.type = "button";
-    minimize.textContent = "X";
+    const minimize = document.createElement("img");
+    minimize.setAttribute("src", "/assets/close.svg");
+    minimize.setAttribute("alt", "Close");
+    minimize.setAttribute("width", "1em");
+    this.userName = document.createElement("p");
+    this.userName.textContent = "";
     minimize.onclick = () => this.hideModal();
-    profileBar.appendChild(userPhoto);
-    profileBar.appendChild(userName);
     profileBar.appendChild(minimize);
+    profileBar.appendChild(this.userName);
 
     const signOut = document.createElement("button");
     signOut.classList.add("bottom-bar");
