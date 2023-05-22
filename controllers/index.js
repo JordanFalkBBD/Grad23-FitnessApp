@@ -20,7 +20,7 @@ router.get("/logout", isLoggedIn, (req, res) => {
       res.send("An error occurred while logging you out.");
     } else {
       req.session.destroy();
-      res.send('<p>You have logged out!</p> <a href="/">Go to home</a>');
+      res.redirect("/");
     }
   });
 });
