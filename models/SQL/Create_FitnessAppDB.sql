@@ -42,10 +42,10 @@ ADD CONSTRAINT [FK_Workout_User]
 FOREIGN KEY (UserID) REFERENCES Users(UserID);
 Go
 
--- Create Excersizes table
+-- Create Excersises table
 USE FitnesAppDB;
-CREATE TABLE [dbo].[Excersizes](
-    [ExcersizeID] [int] IDENTITY(1,1) NOT NULL,
+CREATE TABLE [dbo].[Excersises](
+    [ExcersiseID] [int] IDENTITY(1,1) NOT NULL,
     [Name] [varchar](100) NOT NULL,
 	[Weight] [int] NULL,
 	[Sets] [int] NULL,
@@ -57,14 +57,14 @@ GO
 
 --Primary key constraint
 USE FitnesAppDB;
-ALTER TABLE Excersizes
-ADD CONSTRAINT [PK_Excersize] PRIMARY KEY CLUSTERED ([ExcersizeID] ASC);
+ALTER TABLE Excersises
+ADD CONSTRAINT [PK_Excersise] PRIMARY KEY CLUSTERED ([ExcersiseID] ASC);
 GO
 
 --Forign Key constraint
 USE FitnesAppDB;
-ALTER TABLE Excersizes
-ADD CONSTRAINT [FK_Excersizes_Workout]
+ALTER TABLE Excersises
+ADD CONSTRAINT [FK_Excersises_Workout]
 FOREIGN KEY (WorkoutID) REFERENCES Workout(WorkoutID);
 Go
 
