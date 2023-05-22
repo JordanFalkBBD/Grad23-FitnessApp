@@ -1,5 +1,5 @@
 --Inserting data into the Users table
-USE FitnesAppDB;
+USE FitnessAppDB;
 INSERT INTO [dbo].[Users]
            ([Email],
 		   [Metric]
@@ -9,7 +9,7 @@ VALUES ('slapstick42@gmal.com', 1),
 GO
 
 --Inserting data into the Workout table
-USE FitnesAppDB;
+USE FitnessAppDB;
 INSERT INTO [dbo].[Workout]
            ([Name],
 		   [UserID],
@@ -19,9 +19,9 @@ VALUES ('wk1','1','2022-02-17'),
 ('wk2', '2','2022-02-18')
 GO
 
---Inserting data into the Excersizes table
-USE FitnesAppDB;
-INSERT INTO [dbo].[Excersizes]
+--Inserting data into the Exercises table
+USE FitnessAppDB;
+INSERT INTO [dbo].[Exercises]
            ([Name],
 		   [Weight],
 		   [Sets],
@@ -40,7 +40,7 @@ VALUES ('dumbbell presses','20','3','20','1','2022-02-17'),
 GO
 
 --Inserting data into the Workout table
-USE FitnesAppDB;
+USE FitnessAppDB;
 INSERT INTO [dbo].[Cardio]
            ([Name],
 		   [Distance],

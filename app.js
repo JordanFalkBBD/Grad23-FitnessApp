@@ -10,18 +10,24 @@ const exercises = require("./controllers/exercises");
 const summary = require("./controllers/summary");
 const ninja = require("./controllers/ninja");
 const isLoggedIn = require("./controllers/middleware");
-const config = require("./config")
+const config = require("./config");
 
 const app = express();
 
-// TODO: Add SESSION_SECRET to process.env
-const SESSION_SECRET = "secret";
 app.use(
-  session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true })
+    session({
+      secret: config.session_secret,
+      resave: false,
+      saveUninitialized: true,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, "views")));
+app.use(express.static(path.join(__dirname, "views", "assets")));
+app.use(express.static(path.join(__dirname, "views", "components", "auth-page")));
+app.use(express.static(path.join(__dirname, "views", "components", "profile-modal")));
+app.use(express.static(path.join(__dirname, "views", "components", "summary-page")));
+app.use(express.static(path.join(__dirname, "views", "components", "workout-page")));
 
 // Routes
 app.use("/", routes);
@@ -38,3 +44,4 @@ app.listen(config.port, function () {
   console.log(`Example app listening on port ${config.port}!`);
   console.log(`Visit http://localhost:${config.port}`);
 });
+

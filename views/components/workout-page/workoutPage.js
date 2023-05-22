@@ -7,8 +7,8 @@ async function getWorkout() {
 }
 
 function updateWorkoutName() {
-  const name = document.getElementById("workout_name")
-  fetch("/workout/update/name/" + name)
+  const name = document.getElementById("workout_name");
+  fetch("/workout/update/name/" + name);
 }
 
 function searchExerciseNames() {
@@ -94,9 +94,9 @@ function selectExerciseName(name, type) {
 
 function addExercise() {
   const exercise_name_input = document.getElementById("add_exercise_name");
-  const exercise_name = exercise_name_input.value
-  exercise_name_input.value = ""
-  
+  const exercise_name = exercise_name_input.value;
+  exercise_name_input.value = "";
+
   let metrics = document.getElementsByClassName("metric_input");
   let values = [];
   for (let metric of metrics) {
@@ -106,11 +106,9 @@ function addExercise() {
     });
   }
 
-  let add_exercise_metrics = document.getElementById(
-    "add_exercise_metrics"
-  );
+  let add_exercise_metrics = document.getElementById("add_exercise_metrics");
 
-  add_exercise_metrics.innerHTML = ""
+  add_exercise_metrics.innerHTML = "";
 
   fetch("/exercises/add", {
     method: "POST",
@@ -121,13 +119,11 @@ function addExercise() {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
-  })
-    .then((json) => console.log(json));
+  }).then((json) => console.log(json));
 
   // Reloads with hopefully that exercise added.
-  fillExercises()
+  fillExercises();
 }
-
 
 async function insertMetrics(parent, metrics) {
   for (let metric of metrics) {
@@ -159,22 +155,20 @@ async function fillExercises() {
       let set_of_exercises = document.createElement("ul");
       set_of_exercises.classList.add("exercise_group")
       set_of_exercises.textContent = exercise;
-      insertSetOfExercises(set_of_exercises, exercises[exercise].reverse())
+      insertSetOfExercises(set_of_exercises, exercises[exercise].reverse());
       e_li.appendChild(set_of_exercises);
       exercises_view.appendChild(e_li);
     }
   });
 }
 
-
 async function fillWorkout() {
-  getWorkout().then(workout => {
-    workout_date = document.getElementById("workout_date")
-    workout_date.innerHTML = String(workout.date) + " : "
-    workout_name = document.getElementById("workout_name")
-    workout_name.value = workout.name
-  }
-  )
+  getWorkout().then((workout) => {
+    workout_date = document.getElementById("workout_date");
+    workout_date.innerHTML = String(workout.date) + " : ";
+    workout_name = document.getElementById("workout_name");
+    workout_name.value = workout.name;
+  });
 }
 
 fillWorkout();
