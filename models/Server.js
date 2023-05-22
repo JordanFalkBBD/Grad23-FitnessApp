@@ -91,7 +91,7 @@ async function fetchExercise(workout) {
       await sql.connect(config);
   
       const result = await sql.query(
-        `select ExerciseID, Name, Weight, Sets, Reps, Date from Excersizes where WorkoutID = ${workout}`
+        `select ExerciseID, Name, Weight, Sets, Reps, Date from Exercises where WorkoutID = ${workout}`
         );
   
       const exercises = result.recordset.map(row => {
