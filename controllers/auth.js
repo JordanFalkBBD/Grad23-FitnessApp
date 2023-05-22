@@ -3,22 +3,18 @@ const router = express.Router();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 require('https').globalAgent.options.rejectUnauthorized = false;
-
-// TODO: Create process.env variables for GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
-const GOOGLE_CLIENT_ID =
-  "48579065357-mkqbtlvpfs2fkh1r0vpk32etc1rgnsad.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+const config = require("../config");
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
-      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+      clientID: config.google_client_id,
+      clientSecret: config.google_client_secret,
+      callbackURL: config.google_callback_url,
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
+        // TODO: add/associate user to db records
       return done(null, profile);
     }
   )
