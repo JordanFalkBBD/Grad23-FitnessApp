@@ -23,7 +23,11 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, "views")));
+app.use(express.static(path.join(__dirname, "views", "assets")));
+app.use(express.static(path.join(__dirname, "views", "components", "auth-page")));
+app.use(express.static(path.join(__dirname, "views", "components", "profile-modal")));
+app.use(express.static(path.join(__dirname, "views", "components", "summary-page")));
+app.use(express.static(path.join(__dirname, "views", "components", "workout-page")));
 
 // Routes
 app.use("/", routes);
