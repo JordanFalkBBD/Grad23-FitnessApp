@@ -7,10 +7,13 @@ const data = [
   { year: 2015, count: 30 },
   { year: 2016, count: 28 },
 ];
-async function getData() {
-  const response = await fetch();
-  return response.json();
+async function getData(userID) {
+  const response = await fetch(`/summary/exercises/${userID}/`);
+  return response;
 }
+
+const data2 = await getData(1);
+console.log(data2);
 
 new Chart(document.getElementById("summary"), {
   type: "bar",
