@@ -12,12 +12,12 @@
     <profile-modal></profile-modal>
 
     <navbar>
-      <button onclick="window.location.href='/workout/prev';">Prev</button>
+      <button class="nav_button prev" onclick="window.location.href='/workout/prev';">Prev</button>
       <form id="workout_info">
           <label id="workout_date">Date : </label>
           <input id="workout_name" type="text" maxlength="20" value="Workout Name" onkeyup="updateWorkoutName();">
       </form>
-      <button onclick="window.location.href='/workout/next';">Next</button>
+      <button class="nav_button next" onclick="window.location.href='/workout/next';">Next</button>
     </navbar>
 
     <section id="add_exercise">
@@ -28,11 +28,13 @@
         placeholder="Add Exercise"
         onkeyup="searchExerciseNames();"
       />
-      <div id="add_exercise_name_dropdown"></div>
+      <ul id="add_exercise_name_dropdown"></ul>
       <form id="add_exercise_metrics" action="javascript:addExercise()"></form>
     </section>
 
-    <ul id="exercises"></ul>
+    <section>
+      <ul id="exercises"></ul>
+    </section>
 
     <script
       type="text/javascript"
