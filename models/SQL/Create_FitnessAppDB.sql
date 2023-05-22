@@ -1,11 +1,11 @@
 USE master;
 GO
 
-CREATE DATABASE FitnesAppDB;
+CREATE DATABASE FitnessAppDB;
 GO
 
 -- Create User table
-USE FitnesAppDB;
+USE FitnessAppDB;
 CREATE TABLE [dbo].[Users](
     [UserID] [int] IDENTITY(1,1) NOT NULL,
     [Email] [varchar](100) UNIQUE NOT NULL,
@@ -14,13 +14,13 @@ CREATE TABLE [dbo].[Users](
 GO
 
 --Primary key constraint
-USE FitnesAppDB;
+USE FitnessAppDB;
 ALTER TABLE Users
 ADD CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([UserID] ASC);
 GO
 
 -- Create Workout table
-USE FitnesAppDB;
+USE FitnessAppDB;
 CREATE TABLE [dbo].[Workout](
     [WorkoutID] [int] IDENTITY(1,1) NOT NULL,
     [Name] [varchar](100) UNIQUE NOT NULL,
@@ -30,22 +30,22 @@ CREATE TABLE [dbo].[Workout](
 GO
 
 --Primary key constraint
-USE FitnesAppDB;
+USE FitnessAppDB;
 ALTER TABLE Workout
 ADD CONSTRAINT [PK_Workout] PRIMARY KEY CLUSTERED ([WorkoutID] ASC);
 GO
 
 --Forign Key constraint
-USE FitnesAppDB;
+USE FitnessAppDB;
 ALTER TABLE Workout
 ADD CONSTRAINT [FK_Workout_User]
 FOREIGN KEY (UserID) REFERENCES Users(UserID);
 Go
 
--- Create Excersizes table
-USE FitnesAppDB;
-CREATE TABLE [dbo].[Excersizes](
-    [ExcersizeID] [int] IDENTITY(1,1) NOT NULL,
+-- Create Exercises table
+USE FitnessAppDB;
+CREATE TABLE [dbo].[Exercises](
+    [ExerciseID] [int] IDENTITY(1,1) NOT NULL,
     [Name] [varchar](100) NOT NULL,
 	[Weight] [int] NULL,
 	[Sets] [int] NULL,
@@ -56,20 +56,20 @@ CREATE TABLE [dbo].[Excersizes](
 GO
 
 --Primary key constraint
-USE FitnesAppDB;
-ALTER TABLE Excersizes
-ADD CONSTRAINT [PK_Excersize] PRIMARY KEY CLUSTERED ([ExcersizeID] ASC);
+USE FitnessAppDB;
+ALTER TABLE Exercises
+ADD CONSTRAINT [PK_Exercise] PRIMARY KEY CLUSTERED ([ExerciseID] ASC);
 GO
 
 --Forign Key constraint
-USE FitnesAppDB;
-ALTER TABLE Excersizes
-ADD CONSTRAINT [FK_Excersizes_Workout]
+USE FitnessAppDB;
+ALTER TABLE Exercises
+ADD CONSTRAINT [FK_Exercises_Workout]
 FOREIGN KEY (WorkoutID) REFERENCES Workout(WorkoutID);
 Go
 
 -- Create Cardio table
-USE FitnesAppDB;
+USE FitnessAppDB;
 CREATE TABLE [dbo].[Cardio](
     [CardioID] [int] IDENTITY(1,1) NOT NULL,
     [Name] [varchar](100) NOT NULL,
@@ -80,13 +80,13 @@ CREATE TABLE [dbo].[Cardio](
 GO
 
 --Primary key constraint
-USE FitnesAppDB;
+USE FitnessAppDB;
 ALTER TABLE Cardio
 ADD CONSTRAINT [PK_Cardio] PRIMARY KEY CLUSTERED ([CardioID] ASC);
 GO
 
 --Forign Key constraint
-USE FitnesAppDB;
+USE FitnessAppDB;
 ALTER TABLE Cardio
 ADD CONSTRAINT [FK_Cardio_Workout]
 FOREIGN KEY (WorkoutID) REFERENCES Workout(WorkoutID);

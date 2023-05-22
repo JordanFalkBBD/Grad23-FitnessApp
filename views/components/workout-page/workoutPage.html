@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workouts</title>
+    <link rel="stylesheet" href="/assets/global.css" />
+    <link rel="stylesheet" href="/components/workout-page/workoutPage.css" />
+  </head>
+
+  <body>
+    <profile-modal></profile-modal>
+
+    <navbar>
+      <button onclick="window.location.href='/workout/prev';">Prev</button>
+      <form id="workout_info">
+        <label id="workout_date">Date : </label>
+        <input
+          id="workout_name"
+          type="text"
+          maxlength="20"
+          value="Workout Name"
+          onkeyup="updateWorkoutName();"
+        />
+      </form>
+      <button onclick="window.location.href='/workout/next';">Next</button>
+    </navbar>
+
+    <section id="add_exercise">
+      <input
+        type="text"
+        name="add_exercise_name"
+        id="add_exercise_name"
+        placeholder="Add Exercise"
+        onkeyup="searchExerciseNames();"
+      />
+      <div id="add_exercise_name_dropdown"></div>
+      <form id="add_exercise_metrics" action="javascript:addExercise()"></form>
+    </section>
+
+    <ul id="exercises"></ul>
+
+    <script
+      type="text/javascript"
+      src="/components/workout-page/workoutPage.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/components/profile-modal/profile-modal.js"
+    ></script>
+  </body>
+</html>
