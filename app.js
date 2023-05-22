@@ -14,10 +14,12 @@ const config = require("./config");
 
 const app = express();
 
-// TODO: Add SESSION_SECRET to process.env
-const SESSION_SECRET = "secret";
 app.use(
-  session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true })
+    session({
+      secret: config.session_secret,
+      resave: false,
+      saveUninitialized: true,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -38,3 +40,4 @@ app.listen(config.port, function () {
   console.log(`Example app listening on port ${config.port}!`);
   console.log(`Visit http://localhost:${config.port}`);
 });
+
