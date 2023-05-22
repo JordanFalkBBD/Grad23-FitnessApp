@@ -4,7 +4,7 @@ var config = {
     user: 'sa',
     password: 'mypassword',
     server: 'LESEDIM\\SQLEXPRESS', 
-    database: 'FitnesAppDB',
+    database: 'FitnessAppDB',
     trustServerCertificate: true
 };
 
