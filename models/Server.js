@@ -1,4 +1,5 @@
 var sql = require("mssql");
+const date = require("date-and-time");
 
 var config = {
     user: 'sa',
@@ -133,7 +134,7 @@ async function fetchUserID(email) {
       await sql.connect(config);
   
       const result = await sql.query(
-        `select UserID from Users where Email = ${email}`
+        `select UserID from Users where Email = '${email}'`
         );
   
       const userID = result.recordset[0].UserID;
@@ -147,18 +148,17 @@ async function fetchUserID(email) {
     }
 }
 
-async function addNewWorkout(workout) {
+async function addNewWorkout(name, user) {
     try {
         await sql.connect(config);
+        const now = new Date();
+        const formattedDate = date.format(now, 'YYYY-MM-DD');
     
         const insertResult = await sql.query(`
         INSERT INTO Workout (Name, UserID, Date)
         OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-        VALUES (@name, @user, @date);`, {
-            name: workout.name,
-            user: workout.user,
-            date: workout.date
-        });
+        VALUES ('${name}', ${user}, '${formattedDate}');`
+        );
     
         const newWorkout = new Workout(insertResult.recordset[0].WorkoutID, insertResult.recordset[0].Name, insertResult.recordset[0].Date);
     
@@ -177,14 +177,12 @@ async function updateWorkoutName(WorkoutID, newName) {
     
         const result = await sql.query(`
         UPDATE Workout
-        SET Name = @newName
+        SET Name = '${newName}'
         OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-        WHERE WorkoutID = @WorkoutID;`, {
-            WorkoutID: WorkoutID,
-            newName: newName
-        });
+        WHERE WorkoutID = ${WorkoutID};`
+        );
     
-        const updateWorkout = new Workout(insertResult.recordset[0].WorkoutID, insertResult.recordset[0].Name, insertResult.recordset[0].Date);
+        const updateWorkout = new Workout(result.recordset[0].WorkoutID, result.recordset[0].Name, result.recordset[0].Date);
     
         await sql.close();
     
