@@ -23,22 +23,19 @@ async function getCardio(userID) {
     });
 }
 
-const data2 = await getExercises(1);
-console.log(JSON.parse(data2));
-const data3 = await getCardio(1);
-console.log(JSON.parse(data3));
+makeChart(await getCardio(1));
+makeTable(await getExercises(1));
 
 function makeChart(data) {
   data = JSON.parse(data);
-  console.log(data);
   new Chart(document.getElementById("summary"), {
-    type: "bar",
+    type: "line",
     data: {
-      labels: data.map((row) => row.year),
+      labels: data.map((row) => row.date),
       datasets: [
         {
-          label: "Year",
-          data: data.map((row) => row.count),
+          label: "Distance ran",
+          data: data.map((row) => row.distance),
         },
       ],
     },
@@ -46,12 +43,17 @@ function makeChart(data) {
 }
 
 function makeTable(data) {
+  data = JSON.parse(data);
   let table = document.getElementById("summary-table");
   for (const line of data) {
     let row = table.insertRow();
-    let yearCell = row.insertCell(0);
-    yearCell.innerHTML = line.year;
-    let countCell = row.insertCell(1);
-    countCell.innerHTML = line.count;
+    let i = 0;
+    for (const key in line) {
+      if (key != "id") {
+        let cell = row.insertCell(i);
+        cell.innerHTML = line[key];
+        i++;
+      }
+    }
   }
 }
