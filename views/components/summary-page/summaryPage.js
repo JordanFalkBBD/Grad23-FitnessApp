@@ -7,13 +7,20 @@ const data = [
   { year: 2015, count: 30 },
   { year: 2016, count: 28 },
 ];
-async function getData(userID) {
+async function getExercises(userID) {
   const response = await fetch(`/summary/exercises/${userID}/`);
   return response;
 }
 
-const data2 = await getData(1);
+async function getCardio(userID) {
+  const response = await fetch(`/summary/cardio/${userID}/`);
+  return response;
+}
+
+const data2 = await getExercises(1);
 console.log(data2);
+const data3 = await getCardio(1);
+console.log(data3);
 
 new Chart(document.getElementById("summary"), {
   type: "bar",

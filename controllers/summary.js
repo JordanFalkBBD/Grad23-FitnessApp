@@ -15,4 +15,10 @@ router.get("/exercises/:userID", (req, res) => {
     .then((response) => res.json(response));
 });
 
+router.get("/cardio/:userID", (req, res) => {
+  dal
+    .fetchCardioForUser(req.params.userID)
+    .then((response) => res.json(response));
+});
+
 module.exports = router;

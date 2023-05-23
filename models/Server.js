@@ -2,11 +2,11 @@ var sql = require("mssql");
 const date = require("date-and-time");
 
 var config = {
-  user: "sa",
-  password: "mypassword",
-  server: "LESEDIM\\SQLEXPRESS",
+  user: "root",
+  password: "FitnessApp",
+  server: "",
   database: "FitnessAppDB",
-  trustServerCertificate: true,
+  // trustServerCertificate: true,
 };
 
 class User {
@@ -236,12 +236,41 @@ async function fetchExercisesForUser(userID) {
   }
 }
 
+async function fetchCardioForUser(userID) {
+  try {
+    await sql.connect(config);
+
+    const result = await sql.query(`
+      select CardioID, Name, Distance, Date 
+      from Cardio
+      left outer join Workouts on Cardio.WorkoutID = Workout.WorkoutID
+      where Workout.UserID = ${userID}`);
+
+    const exercises = result.recordset.map((row) => {
+      return new Cardio(
+        row.CardioID,
+        row.Name,
+        row.Distance,
+        row.Date
+      );
+    });
+
+    await sql.close();
+
+    return exercises;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error;
+  }
+}
+
 module.exports = {
   fetchWorkout,
   fetchUser,
   fetchExercise,
   fetchExercisesForUser,
   fetchCardio,
+  fetchCardioForUser,
   fetchUserID,
   addNewWorkout,
   updateWorkoutName,
