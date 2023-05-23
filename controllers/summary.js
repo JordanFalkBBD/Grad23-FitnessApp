@@ -9,16 +9,14 @@ router.get("/", (req, res) => {
   );
 });
 
-router.get("/exercises/:userID", (req, res) => {
-  dal
-    .fetchExercisesForUser(req.params.userID)
-    .then((response) => res.json(response));
+router.get("/exercises/:userID", async (req, res) => {
+  const data = await dal.fetchExercisesForUser(req.params.userID);
+  res.json(JSON.stringify(data));
 });
 
-router.get("/cardio/:userID", (req, res) => {
-  dal
-    .fetchCardioForUser(req.params.userID)
-    .then((response) => res.json(response));
+router.get("/cardio/:userID", async (req, res) => {
+  const data = await dal.fetchCardioForUser(req.params.userID);
+  res.json(JSON.stringify(data));
 });
 
 module.exports = router;
