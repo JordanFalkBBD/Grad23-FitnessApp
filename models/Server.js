@@ -4,9 +4,9 @@ const date = require("date-and-time");
 var config = {
   user: "root",
   password: "FitnessApp",
-  server: "",
+  server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
   database: "FitnessAppDB",
-  // trustServerCertificate: true,
+  trustServerCertificate: true,
 };
 
 class User {
@@ -211,11 +211,10 @@ async function fetchExercisesForUser(userID) {
     await sql.connect(config);
 
     const result = await sql.query(`
-      select ExerciseID, Name, Weight, Sets, Reps, Date 
+      select Exercises.ExerciseID, Exercises.Name, Exercises.Weight, Exercises.Sets, Exercises.Reps, Exercises.Date 
       from Exercises 
-      left outer join Workouts on Exercises.WorkoutID = Workout.WorkoutID
+      left outer join Workout on Exercises.WorkoutID = Workout.WorkoutID
       where Workout.UserID = ${userID}`);
-
     const exercises = result.recordset.map((row) => {
       return new Exercise(
         row.ExerciseID,
@@ -241,9 +240,9 @@ async function fetchCardioForUser(userID) {
     await sql.connect(config);
 
     const result = await sql.query(`
-      select CardioID, Name, Distance, Date 
+      select Cardio.CardioID, Cardio.Name, Cardio.Distance, Cardio.Date 
       from Cardio
-      left outer join Workouts on Cardio.WorkoutID = Workout.WorkoutID
+      left outer join Workout on Cardio.WorkoutID = Workout.WorkoutID
       where Workout.UserID = ${userID}`);
 
     const exercises = result.recordset.map((row) => {
