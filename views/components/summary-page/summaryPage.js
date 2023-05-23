@@ -8,37 +8,50 @@ const data = [
   { year: 2016, count: 28 },
 ];
 async function getExercises(userID) {
-  const response = await fetch(`/summary/exercises/${userID}/`);
-  return response;
+  return await fetch(`/summary/exercises/${userID}/`)
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    });
 }
 
 async function getCardio(userID) {
-  const response = await fetch(`/summary/cardio/${userID}/`);
-  return response;
+  return await fetch(`/summary/cardio/${userID}/`)
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    });
 }
 
 const data2 = await getExercises(1);
-console.log(data2);
+console.log(JSON.parse(data2));
 const data3 = await getCardio(1);
-console.log(data3);
+console.log(JSON.parse(data3));
 
-new Chart(document.getElementById("summary"), {
-  type: "bar",
-  data: {
-    labels: data.map((row) => row.year),
-    datasets: [
-      {
-        label: "Year",
-        data: data.map((row) => row.count),
-      },
-    ],
-  },
-});
-let table = document.getElementById("summary-table");
-for (const line of data) {
-  let row = table.insertRow();
-  let yearCell = row.insertCell(0);
-  yearCell.innerHTML = line.year;
-  let countCell = row.insertCell(1);
-  countCell.innerHTML = line.count;
+function makeChart(data) {
+  data = JSON.parse(data);
+  console.log(data);
+  new Chart(document.getElementById("summary"), {
+    type: "bar",
+    data: {
+      labels: data.map((row) => row.year),
+      datasets: [
+        {
+          label: "Year",
+          data: data.map((row) => row.count),
+        },
+      ],
+    },
+  });
+}
+
+function makeTable(data) {
+  let table = document.getElementById("summary-table");
+  for (const line of data) {
+    let row = table.insertRow();
+    let yearCell = row.insertCell(0);
+    yearCell.innerHTML = line.year;
+    let countCell = row.insertCell(1);
+    countCell.innerHTML = line.count;
+  }
 }
