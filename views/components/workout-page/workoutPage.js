@@ -191,7 +191,7 @@ resizable(document.getElementById('workout_name'),10);
 
 
 document.getElementById("workout_name").addEventListener("onkeyup", updateWorkoutName)
-document.getElementById("add_exercise_name").addEventListener("onkeyup", () => searchExerciseNames())
+document.getElementById("add_exercise_name").onkeyup = searchExerciseNames
 
 async function getWorkout() {
   return fetch("/workout/info").then((response) => response.json());
