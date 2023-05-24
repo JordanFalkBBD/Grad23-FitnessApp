@@ -9,6 +9,7 @@ const workout = require("./controllers/workout");
 const exercises = require("./controllers/exercises");
 const summary = require("./controllers/summary");
 const ninja = require("./controllers/ninja");
+const user = require("./controllers/user");
 const isLoggedIn = require("./controllers/middleware");
 const config = require("./config");
 
@@ -34,6 +35,7 @@ app.use("/summary", isLoggedIn, summary);
 app.use("/workout", isLoggedIn, workout);
 app.use("/exercises", exercises);
 app.use("/ninja", ninja);
+app.use("/user", user);
 
 // Google authentication routes
 app.use("/auth", auth);
