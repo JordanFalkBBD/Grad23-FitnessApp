@@ -6,6 +6,7 @@ const config = {
     google_callback_url: "http://localhost:3000/auth/google/callback",
     session_secret: "secret",
 };
+config.ninja_key = "ywSxdtqTEHMmDeGkymknRjXBr13ZxU7Yz6WYmWSb";
 
 module.exports = config;
 

@@ -1,0 +1,152 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    font-family: sans-serif;
+    background: linear-gradient(#141e30, #243b55);
+    gap: 0rem;
+}
+
+.navbar {
+    display: flex;
+    max-height: 4rem;
+    min-height: 4rem;
+    align-items: center;
+}
+
+.nav_button {
+    width: 50px;
+    color: #03e9f4;
+    background: transparent;
+    border-radius: 20%;
+}
+
+.nav_button:hover {
+    border: 0;
+    max-width: 3rem;
+}
+
+#add_exercise {
+    display: flex;
+    min-height: 6rem;
+    height: max-content;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.input_text {
+    width: 100%;
+    color: #03e9f4;
+    border: 0;
+    background: none;
+    text-transform: uppercase;
+    text-align: center;
+    text-overflow: visible;
+}
+
+.input_text:focus {
+    outline: none;
+}
+
+.input_text:hover, .input_text:focus {
+    outline: #03e9f4;
+    /* ANIMATION PWEEEEZE */
+}
+
+.dropdown_item {
+    width: 100%;
+    color: #03e9f4;
+    background: none;
+    border: 0;
+}
+
+.dropdown_item:hover {
+    background: #243b55;
+    border: 0;
+}
+
+.box {
+    background: rgba(0, 0, 0, .5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+#add_exercise_name_dropdown {
+    padding-left: 0rem;
+    padding-right: 0rem;
+    /* width: 100%; */
+    display: list-item;
+
+    margin: 0;
+    border: 0;
+    /* border-bottom: 0.2rem solid black; */
+    margin-top: -0.15rem;
+    padding-top: -0.15rem;
+}
+
+#add_exercise_metrics {
+    padding: 0;
+    margin: 0;
+}
+
+#workout_info {
+    text-align: center;
+    flex: 1;
+    padding-top: 0.1rem;
+}
+
+#workout_name {
+    min-width: 1rem !important;
+    max-width: 70% !important;
+    transition: width 0.05s;
+    text-align: center;
+    border: 0;
+    margin-bottom: 0.1rem;
+}
+
+.profile-button {
+    width: 4em;
+    height: 4em;
+}
+
+.metric {
+    text-align: right;
+    margin: 0
+}
+
+.exercise_set {
+    text-align: left;
+    text-indent: 1rem;
+    padding-right: 1rem;
+    margin-top: .5rem;
+}
+
+.exercise_group {
+    margin: 0;
+    text-align: center;
+    padding: 0.5rem;
+    line-height: 1rem;
+    text-transform: uppercase;
+}
+
+.profile-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}

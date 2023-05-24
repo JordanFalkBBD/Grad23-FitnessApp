@@ -1,10 +1,12 @@
+function openModal() {
+  const modal = document.getElementById("modal");
+  modal.showModal();
+}
+
 async function getExercises() {
   return fetch("/exercises").then((response) => response.json());
 }
 
-async function getWorkout() {
-  return fetch("/workout/info").then((response) => response.json());
-}
 
 function updateWorkoutName() {
   const name = document.getElementById("workout_name");
@@ -18,9 +20,12 @@ function searchExerciseNames() {
   let add_exercise_metrics = document.getElementById("add_exercise_metrics");
   add_exercise_metrics.innerHTML = "";
 
+
   fetch("/ninja/" + input)
     .then((response) => response.json())
     .then((response) => {
+      console.log(response)
+
       let results = [];
       for (let result of response) {
         results.push({ name: result.name, type: result.type });
@@ -35,8 +40,10 @@ function searchExerciseNames() {
       add_exercise_name_dropdown.innerHTML = "";
 
       for (let exercise of results) {
-        let div = document.createElement("div");
+        let li =  document.createElement("li");
+        li.classList.add("dropdown_item_li")
         let suggestion = document.createElement("button");
+        suggestion.classList.add("dropdown_item")
 
         suggestion.onclick = (e) =>
           selectExerciseName(e.target.textContent, e.target.value);
@@ -46,8 +53,8 @@ function searchExerciseNames() {
           exercise.name.slice(1).toLowerCase();
         suggestion.value = exercise.type;
         suggestion.type = "text/css";
-        div.appendChild(suggestion);
-        add_exercise_name_dropdown.appendChild(div);
+        li.appendChild(suggestion)
+        add_exercise_name_dropdown.appendChild(li);
       }
     });
 }
@@ -64,34 +71,24 @@ function selectExerciseName(name, type) {
       );
 
       add_exercise_metrics.innerHTML = "";
-
+      
       for (const metric of metrics) {
-        let div = document.createElement("div");
         let metric_label = document.createElement("label");
         metric_label.innerHTML = metric;
-
-        div.appendChild(metric_label);
-
         let metric_input = document.createElement("input");
         metric_input.required = true;
         metric_input.type = "number";
         metric_input.name = metric;
         metric_input.classList.add("metric_input");
-
-        div.appendChild(metric_input);
-        add_exercise_metrics.appendChild(div);
+        add_exercise_metrics.appendChild(metric_input);
       }
 
-      let div = document.createElement("div");
       let submit_button = document.createElement("input");
       submit_button.required = true;
       submit_button.type = "submit";
       submit_button.name = "submit";
       submit_button.value = "+";
-
-      div.appendChild(submit_button);
-
-      add_exercise_metrics.appendChild(div);
+      add_exercise_metrics.appendChild(submit_button);
     });
 
   const exercise_name_field = document.getElementById("add_exercise_name");
@@ -136,6 +133,7 @@ function addExercise() {
 async function insertMetrics(parent, metrics) {
   for (let metric of metrics) {
     let metric_info = document.createElement("p");
+    metric_info.classList.add("metric")
     metric_info.textContent = String(metric.value) + " " + String(metric.unit);
     parent.appendChild(metric_info);
   }
@@ -144,8 +142,9 @@ async function insertMetrics(parent, metrics) {
 async function insertSetOfExercises(parent, exercise) {
   for (let set of exercise) {
     let exercise_info = document.createElement("li");
-    exercise_info.textContent = "SET " + String(set.number) + ":";
-    insertMetrics(exercise_info, set.metrics);
+    exercise_info.classList.add("exercise_set")
+    exercise_info.innerHTML = "<p> SET " + String(set.number) + ":</p>";
+    insertMetrics(exercise_info, set.metrics)
     parent.appendChild(exercise_info);
   }
 }
@@ -159,6 +158,7 @@ async function fillExercises() {
     for (let exercise of Object.keys(exercises)) {
       let e_li = document.createElement("li");
       let set_of_exercises = document.createElement("ul");
+      set_of_exercises.classList.add("exercise_group")
       set_of_exercises.textContent = exercise;
       insertSetOfExercises(set_of_exercises, exercises[exercise].reverse());
       e_li.appendChild(set_of_exercises);
@@ -176,5 +176,27 @@ async function fillWorkout() {
   });
 }
 
-fillWorkout();
 fillExercises();
+
+function resizable (el, factor) {
+  var int = Number(factor) || 7.7;
+  function resize() {el.style.width = ((el.value.length+1) * int) + 'px'}
+  var e = 'keyup,keypress,focus,blur,change'.split(',');
+  for (var i in e) el.addEventListener(e[i],resize,false);
+  resize();
+}
+
+resizable(document.getElementById('workout_name'),10);
+// resizable(document.getElementById('add_exercise_name'),7);
+
+
+document.getElementById("workout_name").onkeyup = updateWorkoutName
+document.getElementById("add_exercise_name").onkeyup = searchExerciseNames
+document.getElementById("profile-button").onclick = openModal
+
+async function getWorkout() {
+  return fetch("/workout/info").then((response) => response.json());
+}
+
+fillWorkout();
+console.log("SETUP!")

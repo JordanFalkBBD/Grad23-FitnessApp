@@ -1,52 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Workouts</title>
-    <link rel="stylesheet" href="/assets/global.css" />
-    <link rel="stylesheet" href="/components/workout-page/workoutPage.css" />
-  </head>
 
-  <body>
-    <profile-modal></profile-modal>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fitness Tracker</title>
+  <link rel="stylesheet" href="workoutPage.css" />
+</head>
 
-    <navbar>
-      <button onclick="window.location.href='/workout/prev';">Prev</button>
-      <form id="workout_info">
-        <label id="workout_date">Date : </label>
-        <input
-          id="workout_name"
-          type="text"
-          maxlength="20"
-          value="Workout Name"
-          onkeyup="updateWorkoutName();"
-        />
-      </form>
-      <button onclick="window.location.href='/workout/next';">Next</button>
-    </navbar>
+<body>
+  <section class="profile-box">
+    <button type="button" class="profile-button" id="profile-button">
+      <img alt="profile" class="profile-image" src="profile.svg">
+    </button>
+  </section>
+  
+  <profile-modal id="modal"></profile-modal>
+  <navbar id="workout_nav" class="navbar box">
+    <button type="button" class="nav_button" onclick="window.location.href='/workout/prev';"><</button>
+    <form id="workout_info">
+      <label id="workout_date">Date : </label>
+      <input id="workout_name" class="input_text" type="text" maxlength="20" value="Workout Name" />
+    </form>
+    <button type="button" class="nav_button" onclick="window.location.href='/workout/next';">></button>
+  </navbar>
 
-    <section id="add_exercise">
-      <input
-        type="text"
-        name="add_exercise_name"
-        id="add_exercise_name"
-        placeholder="Add Exercise"
-        onkeyup="searchExerciseNames();"
-      />
-      <div id="add_exercise_name_dropdown"></div>
-      <form id="add_exercise_metrics" action="javascript:addExercise()"></form>
-    </section>
+  <section id="add_exercise" class="box">
+    <input type="text" name="add_exercise_name" class="input_text" id="add_exercise_name" placeholder="Add Exercise"/>
+    <ul id="add_exercise_name_dropdown"></ul>
+    <form id="add_exercise_metrics" action="javascript:addExercise()"></form>
+  </section>
 
+  <section id="exercise_logs" class="box">
     <ul id="exercises"></ul>
+  </section>
 
-    <script
-      type="text/javascript"
-      src="/components/workout-page/workoutPage.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="/components/profile-modal/profile-modal.js"
-    ></script>
-  </body>
+  <script type="module" src="workoutPage.js"></script>
+  <script type="module" src="profile-modal.js"></script>
+</body>
+
 </html>

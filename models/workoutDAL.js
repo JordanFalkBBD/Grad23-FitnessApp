@@ -1,3 +1,5 @@
+const server = require("../models/Server");
+
 class Metric {
   constructor(id, unit, value) {
     this.id = id;
@@ -42,14 +44,12 @@ function getMetricsForExercise(ExerciseID) {
 
 function getExercisesForWorkout(WorkoutID) {
   // newest to oldest exercise in workout
-
-  return {
-    exercises: [
-      new Exercise(3, "barbell lifts", getMetricsForExercise(3)),
-      new Exercise(2, "barbell lifts", getMetricsForExercise(2)),
-      new Exercise(1, "push ups", getMetricsForExercise(1)),
-    ],
-  };
+  server.fetchExercise(WorkoutID)
+  .then(exercises => {
+    return exercises;
+  })
+  .catch(error => {
+  });
 }
 
 function getWorkoutsForUser(UserID) {
