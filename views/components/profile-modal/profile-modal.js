@@ -52,11 +52,11 @@ class ProfileModal extends HTMLElement {
 
     const globalStyle = document.createElement("link");
     globalStyle.setAttribute("rel", "stylesheet");
-    globalStyle.setAttribute("href", "/assets/global.css");
+    globalStyle.setAttribute("href", "global.css");
 
     const style = document.createElement("link");
     style.setAttribute("rel", "stylesheet");
-    style.setAttribute("href", "/components/profile-modal/profile-modal.css");
+    style.setAttribute("href", "profile-modal.css");
 
     const shadow = this.attachShadow({ mode: "open" });
 
@@ -73,7 +73,7 @@ class ProfileModal extends HTMLElement {
     this.unit = document.createElement("p");
     this.unit.textContent = "Metric";
     const slidingSection = document.createElement("img");
-    slidingSection.setAttribute("src", "/assets/arrow-right.svg");
+    slidingSection.setAttribute("src", "arrow-right.svg");
     slidingSection.setAttribute("alt", "Slider indicator");
     unitSlide.appendChild(slidingSection);
     unitSlide.appendChild(this.unit);
@@ -82,7 +82,7 @@ class ProfileModal extends HTMLElement {
     const profileBar = document.createElement("article");
     profileBar.classList.add("profile-info");
     const minimize = document.createElement("img");
-    minimize.setAttribute("src", "/assets/close.svg");
+    minimize.setAttribute("src", "close.svg");
     minimize.setAttribute("alt", "Close");
     minimize.setAttribute("width", "1em");
     this.userName = document.createElement("p");

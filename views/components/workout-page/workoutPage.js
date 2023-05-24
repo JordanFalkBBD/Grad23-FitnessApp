@@ -1,10 +1,12 @@
+function openModal() {
+  const modal = document.getElementById("modal");
+  modal.showModal();
+}
+
 async function getExercises() {
   return fetch("/exercises").then((response) => response.json());
 }
 
-async function getWorkout() {
-  return fetch("/workout/info").then((response) => response.json());
-}
 
 function updateWorkoutName() {
   const name = document.getElementById("workout_name");
@@ -18,9 +20,12 @@ function searchExerciseNames() {
   let add_exercise_metrics = document.getElementById("add_exercise_metrics");
   add_exercise_metrics.innerHTML = "";
 
+
   fetch("/ninja/" + input)
     .then((response) => response.json())
     .then((response) => {
+      console.log(response)
+
       let results = [];
       for (let result of response) {
         results.push({ name: result.name, type: result.type });
@@ -171,7 +176,6 @@ async function fillWorkout() {
   });
 }
 
-fillWorkout();
 fillExercises();
 
 function resizable (el, factor) {
@@ -182,4 +186,16 @@ function resizable (el, factor) {
   resize();
 }
 
-resizable(document.getElementById('workout_name'),7);
+resizable(document.getElementById('workout_name'),10);
+// resizable(document.getElementById('add_exercise_name'),7);
+
+
+document.getElementById("workout_name").addEventListener("onkeyup", updateWorkoutName)
+document.getElementById("add_exercise_name").addEventListener("onkeyup", () => searchExerciseNames())
+
+async function getWorkout() {
+  return fetch("/workout/info").then((response) => response.json());
+}
+
+fillWorkout();
+console.log("SETUP!")
