@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
+    "deploy": "forever start app.js",
+    "kill": "forever stopall",
     "dev": "nodemon app.js"
   },
   "repository": {
@@ -22,6 +24,7 @@
     "date-and-time": "^3.0.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "forever": "^4.0.3",
     "mssql": "^9.1.1",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0"
