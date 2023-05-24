@@ -9,6 +9,8 @@ class ProfileModal extends HTMLElement {
 
   userName;
 
+  userID;
+
   initialState;
 
   currentState;
@@ -47,7 +49,7 @@ class ProfileModal extends HTMLElement {
     this.profileModal.classList.remove("hidden");
   };
 
-  setState = function (username, metric) {
+  setState = function (userID, username, metric) {
     this.userName.textContent = username;
     if (!metric) {
       const root = document.querySelector(":root");
@@ -63,6 +65,7 @@ class ProfileModal extends HTMLElement {
     }
     this.initialState = !!metric;
     this.currentState = !!metric;
+    this.userID = userID;
   }
 
   constructor() {
