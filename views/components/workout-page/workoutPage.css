@@ -9,7 +9,7 @@ body {
     color: #fff;
     font-family: sans-serif;
     background: linear-gradient(#141e30, #243b55);
-    gap: 2rem;
+    gap: 0rem;
 }
 
 .navbar {
@@ -31,12 +31,13 @@ body {
     max-width: 3rem;
 }
 
-
 #add_exercise {
     display: flex;
-    display: flex;
-    max-height: 6rem;
     min-height: 6rem;
+    height: max-content;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .input_text {
@@ -49,8 +50,25 @@ body {
     text-overflow: visible;
 }
 
+.dropdown_item {
+    width: 100%;
+    color: #03e9f4;
+    background: none;
+    border: 0;
+}
+
+.dropdown_item:hover {
+    background: #243b55;
+    border: 0;
+}
+
 .input_text:focus {
     outline: none;
+}
+
+.input_text:hover, .input_text:focus {
+    outline: #03e9f4;
+    /* ANIMATION PWEEEEZE */
 }
 
 .box {
@@ -59,6 +77,7 @@ body {
     box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
     border-radius: 10px;
     padding: 2rem;
+    margin-bottom: 2rem;
 }
 
 ul {
@@ -85,29 +104,6 @@ ul {
     margin: 0;
 }
 
-.dropdown_item {
-    /* background-color: var(--foreground); */
-    padding-left: 1rem;
-    padding-right: 1rem;
-    /* width: 100%-2rem; */
-    border: 0;
-}
-
-.dropdown_item:hover {
-    /* background-color: var(--highlight); */
-    padding-left: 1rem;
-    padding-right: 1rem;
-    /* width: 100%-2rem; */
-    border: 0;
-}
-
-.dropdown_item_li {
-    /* background-color: var(--foreground); */
-    padding-left: 0rem;
-    padding-right: 1rem;
-}
-
-
 #workout_info {
     text-align: center;
     flex: 1;
@@ -123,9 +119,7 @@ ul {
     margin-bottom: 0.1rem;
 }
 
-#workout_name:hover {
-    
-}
+
 
 .profile-button {
     width: 4em;
@@ -141,20 +135,15 @@ ul {
     text-align: left;
     text-indent: 1rem;
     padding-right: 1rem;
-    /* border-top: 0.15rem dashed black; */
     margin-top: .5rem;
 }
 
 .exercise_group {
-    /* background-color: var(--foreground); */
     margin: 0;
     text-align: center;
     padding: 0.5rem;
     line-height: 1rem;
     text-transform: uppercase;
-    /* border-bottom: 0.2rem solid black;
-    border-top: 0.2rem solid black; */
-
 }
 
 .profile-box {
@@ -162,4 +151,5 @@ ul {
     flex-direction: row;
     justify-content: flex-end;
     width: 100%;
+    margin-bottom: 0.5rem;
 }

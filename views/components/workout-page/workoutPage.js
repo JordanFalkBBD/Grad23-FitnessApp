@@ -190,8 +190,9 @@ resizable(document.getElementById('workout_name'),10);
 // resizable(document.getElementById('add_exercise_name'),7);
 
 
-document.getElementById("workout_name").addEventListener("onkeyup", updateWorkoutName)
+document.getElementById("workout_name").onkeyup = updateWorkoutName
 document.getElementById("add_exercise_name").onkeyup = searchExerciseNames
+document.getElementById("profile-button").onclick = openModal
 
 async function getWorkout() {
   return fetch("/workout/info").then((response) => response.json());
