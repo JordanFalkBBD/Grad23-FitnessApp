@@ -1,3 +1,5 @@
+const https = require("https");
+const fs = require("fs");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
@@ -41,7 +43,12 @@ app.use("/user", user);
 app.use("/auth", auth);
 
 // Start server
-app.listen(config.port, function () {
+const options = {
+  key: fs.readFileSync("key.pem"),
+  cert: fs.readFileSync("cert.pem"),
+}
+
+https.createServer(options, app).listen(config.port, function () {
   console.log(`Example app listening on port ${config.port}!`);
   console.log(`Visit http://localhost:${config.port}`);
 });
