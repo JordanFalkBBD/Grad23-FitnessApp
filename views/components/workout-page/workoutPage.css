@@ -62,14 +62,7 @@ body {
     border: 0;
 }
 
-.input_text:focus {
-    outline: none;
-}
 
-.input_text:hover, .input_text:focus {
-    outline: #03e9f4;
-    /* ANIMATION PWEEEEZE */
-}
 
 .box {
     background: rgba(0, 0, 0, .5);
