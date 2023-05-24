@@ -81,7 +81,7 @@ body {
     background: linear-gradient(90deg, transparent, #03e9f4);
     animation: btn-anim1 1s linear infinite;
 }
-
+ 
 @keyframes btn-anim1 {
     0% {
         left: -100%;
