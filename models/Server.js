@@ -3,10 +3,10 @@ const date = require("date-and-time");
 
 var config = {
     user: 'sa',
-    password: 'mypassword',
-    server: 'LESEDIM\\SQLEXPRESS', 
-    database: 'FitnessAppDB',
-    trustServerCertificate: true
+    password: "FitnessApp",
+    server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
+    database: "FitnessAppDB",
+    trustServerCertificate: true,
 };
 
 class User{
