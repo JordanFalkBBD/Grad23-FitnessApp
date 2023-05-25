@@ -202,5 +202,10 @@ async function getWorkout() {
   return fetch("/workout/info").then((response) => response.json());
 }
 
+const response = await fetch("/users/");
+const user = await response.json();
+
+const modal = document.getElementById("modal");
+modal.setState(user?.email, user?.metric);
 fillWorkout();
 console.log("SETUP!")
