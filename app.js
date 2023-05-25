@@ -37,7 +37,7 @@ app.use("/summary", isLoggedIn, summary);
 app.use("/workout", isLoggedIn, workout);
 app.use("/exercises", exercises);
 app.use("/ninja", ninja);
-app.use("/user", user);
+app.use("/users", user);
 
 // Google authentication routes
 app.use("/auth", auth);

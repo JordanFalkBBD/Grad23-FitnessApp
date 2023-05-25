@@ -9,8 +9,6 @@ class ProfileModal extends HTMLElement {
 
   userName;
 
-  userID;
-
   initialState;
 
   currentState;
@@ -49,7 +47,7 @@ class ProfileModal extends HTMLElement {
     this.profileModal.classList.remove("hidden");
   };
 
-  setState = function (userID, username, metric) {
+  setState = function (username, metric) {
     this.userName.textContent = username;
     if (!metric) {
       const root = document.querySelector(":root");
@@ -65,7 +63,6 @@ class ProfileModal extends HTMLElement {
     }
     this.initialState = !!metric;
     this.currentState = !!metric;
-    this.userID = userID;
   }
 
   constructor() {
@@ -111,7 +108,7 @@ class ProfileModal extends HTMLElement {
 
     this.saveButton = document.createElement("button");
     this.saveButton.type = "button";
-    this.saveButton.onclick = () => alert('Save click'); //TODO replace this with network call to save preferences
+    this.saveButton.onclick = async () => await fetch(`/users/update/${this.currentState}/${this.userName.textContent}`, {method: "POST"});
     this.saveButton.classList.add("save-button")
     this.saveButton.textContent = "Save";
     this.saveButton.disabled = true;
@@ -135,7 +132,7 @@ class ProfileModal extends HTMLElement {
     signOut.type = "button";
     signOut.textContent = "Sign Out";
     signOut.onclick = () => {
-      history.pushState({}, "", "http://localhost:3000/logout");
+      history.pushState({}, "", "https://localhost:3000/logout");
       history.go(0);
     };
 
