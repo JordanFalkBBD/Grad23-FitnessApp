@@ -5,7 +5,7 @@ const date = require("date-and-time");
 const server = require("../models/Server");
 
 router.get("/", async (req, res) => {
-  req.session.userID = await server.fetchUserID("slapstick42@gmal.com");
+  req.session.userID = await server.fetchUserID(req.session.passport.user.email);
 
   res.sendFile(
     path.join(__dirname, "../views/components/workout-page/workoutPage.html")
