@@ -64,7 +64,7 @@ async function fetchWorkouts(user) {
       return workouts;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -87,7 +87,7 @@ async function fetchUser(user) {
       return users;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -110,7 +110,7 @@ async function fetchExercise(workout) {
       return exercises;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -133,19 +133,21 @@ async function fetchCardio(workout) {
       return cardios;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
 async function fetchUserID(email) {
     try {
       await sql.connect(config);
+      console.log(email);
 
       const query = `select UserID from Users where Email = @email`;
       const request = new sql.Request();
       request.input('email', sql.VarChar, email);
   
       const result = await request.query(query);
+      console.log(result);
   
       const userID = result.recordset[0].UserID;
   
@@ -154,7 +156,7 @@ async function fetchUserID(email) {
       return userID;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -185,7 +187,7 @@ async function addNewWorkout(name, user) {
         return newWorkout;
       } catch (error) {
         console.error('Error:', error.message);
-        throw error;
+        return;
       }
 }
 
@@ -198,7 +200,7 @@ async function addNewUser(email, metric) {
         VALUES (@email, @metric);`;
         const request = new sql.Request();
         request.input('email', sql.VarChar, email);
-        request.input('metric', sql.Int, metric);
+        request.input('metric', sql.Bit, metric);
     
         const insertResult = await request.query(query);
     
@@ -212,7 +214,7 @@ async function addNewUser(email, metric) {
         return newUser;
       } catch (error) {
         console.error('Error:', error.message);
-        throw error;
+        return;
       }
 }
 
@@ -249,7 +251,7 @@ async function addNewExercise(name, weight, sets, reps, workoutID) {
         return newExercise;
       } catch (error) {
         console.error('Error:', error.message);
-        throw error;
+        return;
       }
 }
 
@@ -282,7 +284,7 @@ async function addCardio(name, distance, workoutID) {
       return newCardio;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -310,7 +312,7 @@ async function updateWorkoutName(WorkoutID, newName) {
         return updateWorkout;
       } catch (error) {
         console.error('Error:', error.message);
-        throw error;
+        return;
       }
 }
 
@@ -339,7 +341,7 @@ async function updateWorkout(WorkoutID, newName, newDate) {
       return updateWorkout;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -353,7 +355,7 @@ async function updateUser(userID, newEmail, newMetric) {
       WHERE UserID = @userid;`;
       const request = new sql.Request();
       request.input('email', sql.VarChar, newEmail);
-      request.input('metric', sql.Int, newMetric);
+      request.input('metric', sql.Bit, newMetric);
       request.input('userid', sql.Int, userID);
   
       const result = await request.query(query);
@@ -368,7 +370,7 @@ async function updateUser(userID, newEmail, newMetric) {
       return updateUser;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -403,7 +405,7 @@ async function updateExercise(exerciseID, newName, newWeight, newSets, newReps, 
       return updateExercise;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -434,7 +436,7 @@ async function updateCardio(cardioID, newName, newDistance, newDate) {
       return updateCardio;
     } catch (error) {
       console.error('Error:', error.message);
-      throw error;
+      return;
     }
 }
 
@@ -455,7 +457,7 @@ async function fetchMetric(UserID) {
     return metric;
   } catch (error) {
     console.error('Error:', error.message);
-    throw error;
+    return;
   }
 }
 
@@ -479,7 +481,7 @@ async function getWorkoutFromID(WorkoutID) {
     return workout;
   } catch (error) {
     console.error('Error:', error.message);
-    throw error;
+    return;
   }
 }
 
@@ -512,7 +514,7 @@ async function fetchExercisesForUser(userID) {
     return exercises;
   } catch (error) {
     console.error("Error:", error.message);
-    throw error;
+    return;
   }
 }
 
@@ -538,7 +540,7 @@ async function fetchCardioForUser(userID) {
     return exercises;
   } catch (error) {
     console.error("Error:", error.message);
-    throw error;
+    return;
   }
 }
 
