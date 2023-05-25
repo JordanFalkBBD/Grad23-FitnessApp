@@ -48,11 +48,13 @@ class Cardio{
 async function fetchWorkouts(user) {
     try {
       await sql.connect(config);
+
+      const query = `select WorkoutID, Name, UserID, Date from Workout where UserID = @userid`;
+      const request = new sql.Request();
+      request.input('userid', sql.Int, user);
   
-      const result = await sql.query(
-        `select WorkoutID, Name, UserID, Date from Workout where UserID = ${user}`
-        );
-  
+      const result = await request.query(query);
+
       const workouts = result.recordset.map(row => {
         return new Workout(row.WorkoutID, row.Name, row.Date);
       });
@@ -69,10 +71,12 @@ async function fetchWorkouts(user) {
 async function fetchUser(user) {
     try {
       await sql.connect(config);
+
+      const query = `select UserID, Email, Metric from Users where UserID = @userid`;
+      const request = new sql.Request();
+      request.input('userid', sql.Int, user);
   
-      const result = await sql.query(
-        `select UserID, Email, Metric from Users where UserID = ${user}`
-        );
+      const result = await request.query(query);
   
       const users = result.recordset.map(row => {
         return new User(row.UserID, row.Email, row.Metric);
@@ -90,10 +94,12 @@ async function fetchUser(user) {
 async function fetchExercise(workout) {
     try {
       await sql.connect(config);
+
+      const query = `select ExerciseID, Name, Weight, Sets, Reps, Date from Exercises where WorkoutID = @workoutid`;
+      const request = new sql.Request();
+      request.input('workoutid', sql.Int, workout);
   
-      const result = await sql.query(
-        `select ExerciseID, Name, Weight, Sets, Reps, Date from Exercises where WorkoutID = ${workout}`
-        );
+      const result = await request.query(query);
   
       const exercises = result.recordset.map(row => {
         return new Exercise(row.ExerciseID, row.Name, row.Weight, row.Sets, row.Reps, row.Date);
@@ -111,10 +117,12 @@ async function fetchExercise(workout) {
 async function fetchCardio(workout) {
     try {
       await sql.connect(config);
+
+      const query = `select CardioID, Name, Distance, Date from Cardio where WorkoutID = @workoutid`;
+      const request = new sql.Request();
+      request.input('workoutid', sql.Int, workout);
   
-      const result = await sql.query(
-        `select CardioID, Name, Distance, Date from Cardio where WorkoutID = ${workout}`
-        );
+      const result = await request.query(query);
   
       const cardios = result.recordset.map(row => {
         return new Cardio(row.CardioID, row.Name, row.Distance, row.Date);
@@ -132,10 +140,12 @@ async function fetchCardio(workout) {
 async function fetchUserID(email) {
     try {
       await sql.connect(config);
+
+      const query = `select UserID from Users where Email = @email`;
+      const request = new sql.Request();
+      request.input('email', sql.VarChar, email);
   
-      const result = await sql.query(
-        `select UserID from Users where Email = '${email}'`
-        );
+      const result = await request.query(query);
   
       const userID = result.recordset[0].UserID;
   
@@ -151,14 +161,19 @@ async function fetchUserID(email) {
 async function addNewWorkout(name, user) {
     try {
         await sql.connect(config);
+
         const now = new Date();
         const formattedDate = date.format(now, 'YYYY-MM-DD');
-    
-        const insertResult = await sql.query(`
-        INSERT INTO Workout (Name, UserID, Date)
+
+        const query = `INSERT INTO Workout (Name, UserID, Date)
         OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-        VALUES ('${name}', ${user}, '${formattedDate}');`
-        );
+        VALUES (@name, @userid, @date);`;
+        const request = new sql.Request();
+        request.input('name', sql.VarChar, name);
+        request.input('userid', sql.Int, user);
+        request.input('date', sql.Date, formattedDate);
+    
+        const insertResult = await request.query(query);
     
         const newWorkout = new Workout(insertResult.recordset[0].WorkoutID
           , insertResult.recordset[0].Name
@@ -177,12 +192,15 @@ async function addNewWorkout(name, user) {
 async function addNewUser(email, metric) {
     try {
         await sql.connect(config);
-    
-        const insertResult = await sql.query(`
-        INSERT INTO Users (Email, Metric)
+
+        const query = `INSERT INTO Users (Email, Metric)
         OUTPUT inserted.UserID, inserted.Email, inserted.Metric
-        VALUES ('${email}', ${metric});`
-        );
+        VALUES (@email, @metric);`;
+        const request = new sql.Request();
+        request.input('email', sql.VarChar, email);
+        request.input('metric', sql.Int, metric);
+    
+        const insertResult = await request.query(query);
     
         const newUser = new User(insertResult.recordset[0].UserID
           , insertResult.recordset[0].Email
@@ -201,14 +219,22 @@ async function addNewUser(email, metric) {
 async function addNewExercise(name, weight, sets, reps, workoutID) {
     try {
         await sql.connect(config);
+
         const now = new Date();
         const formattedDate = date.format(now, 'YYYY-MM-DD');
-    
-        const insertResult = await sql.query(`
-        INSERT INTO Exercises (Name, Weight, Sets, Reps, WorkoutID, Date)
+
+        const query = `INSERT INTO Exercises (Name, Weight, Sets, Reps, WorkoutID, Date)
         OUTPUT inserted.ExerciseID, inserted.Name, inserted.Weight, inserted.Sets, inserted.Reps, inserted.WorkoutID, inserted.Date
-        VALUES ('${name}', ${weight}, ${sets}, ${reps}, ${workoutID}, '${formattedDate}');`
-        );
+        VALUES (@name, @weight, @sets, @reps, @workoutid, @date);`;
+        const request = new sql.Request();
+        request.input('name', sql.VarChar, name);
+        request.input('weight', sql.Int, weight);
+        request.input('sets', sql.Int, sets);
+        request.input('reps', sql.Int, reps);
+        request.input('workoutid', sql.Int, workoutID);
+        request.input('date', sql.Date, formattedDate);
+    
+        const insertResult = await request.query(query);
     
         const newExercise = new Exercise(insertResult.recordset[0].ExerciseID
           , insertResult.recordset[0].Name
@@ -230,14 +256,20 @@ async function addNewExercise(name, weight, sets, reps, workoutID) {
 async function addCardio(name, distance, workoutID) {
   try {
       await sql.connect(config);
+
       const now = new Date();
       const formattedDate = date.format(now, 'YYYY-MM-DD');
-  
-      const insertResult = await sql.query(`
-      INSERT INTO Cardio (Name, Distance, WorkoutID, Date)
+
+      const query = `INSERT INTO Cardio (Name, Distance, WorkoutID, Date)
       OUTPUT inserted.CardioID, inserted.Name, inserted.Distance, inserted.WorkoutID, inserted.Date
-      VALUES ('${name}', ${distance}, ${workoutID}, '${formattedDate}');`
-      );
+      VALUES (@name, @distance, @workoutid, @date);`;
+      const request = new sql.Request();
+      request.input('name', sql.VarChar, name);
+      request.input('distance', sql.Int, distance);
+      request.input('workoutid', sql.Int, workoutID);
+      request.input('date', sql.Date, formattedDate);
+  
+      const insertResult = await request.query(query);
   
       const newCardio = new Cardio(insertResult.recordset[0].CardioID
         , insertResult.recordset[0].Name
@@ -257,13 +289,16 @@ async function addCardio(name, distance, workoutID) {
 async function updateWorkoutName(WorkoutID, newName) {
     try {
         await sql.connect(config);
-    
-        const result = await sql.query(`
-        UPDATE Workout
-        SET Name = '${newName}'
+
+        const query = `UPDATE Workout
+        SET Name = @name
         OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-        WHERE WorkoutID = ${WorkoutID};`
-        );
+        WHERE WorkoutID = @workoutid;`;
+        const request = new sql.Request();
+        request.input('name', sql.VarChar, newName);
+        request.input('workoutid', sql.Int, WorkoutID);
+    
+        const result = await request.query(query);
     
         const updateWorkout = new Workout(result.recordset[0].WorkoutID
           , result.recordset[0].Name
@@ -282,13 +317,17 @@ async function updateWorkoutName(WorkoutID, newName) {
 async function updateWorkout(WorkoutID, newName, newDate) {
   try {
       await sql.connect(config);
-  
-      const result = await sql.query(`
-      UPDATE Workout
-      SET Name = '${newName}', Date = '${newDate}'
+
+      const query = `UPDATE Workout
+      SET Name = @name, Date = @date
       OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-      WHERE WorkoutID = ${WorkoutID};`
-      );
+      WHERE WorkoutID = @workoutid;`;
+      const request = new sql.Request();
+      request.input('name', sql.VarChar, newName);
+      request.input('date', sql.Date, newDate);
+      request.input('workoutid', sql.Int, WorkoutID);
+  
+      const result = await request.query(query);
   
       const updateWorkout = new Workout(result.recordset[0].WorkoutID
         , result.recordset[0].Name
@@ -307,13 +346,17 @@ async function updateWorkout(WorkoutID, newName, newDate) {
 async function updateUser(userID, newEmail, newMetric) {
   try {
       await sql.connect(config);
-  
-      const result = await sql.query(`
-      UPDATE Users
-      SET Email = '${newEmail}', Metric = '${newMetric}'
+
+      const query = `UPDATE Users
+      SET Email = @email, Metric = @metric
       OUTPUT inserted.UserID, inserted.Email, inserted.Metric
-      WHERE UserID = ${userID};`
-      );
+      WHERE UserID = @userid;`;
+      const request = new sql.Request();
+      request.input('email', sql.VarChar, newEmail);
+      request.input('metric', sql.Int, newMetric);
+      request.input('userid', sql.Int, userID);
+  
+      const result = await request.query(query);
   
       const updateUser = new User(result.recordset[0].UserID
         , result.recordset[0].Email
@@ -332,13 +375,20 @@ async function updateUser(userID, newEmail, newMetric) {
 async function updateExercise(exerciseID, newName, newWeight, newSets, newReps, newDate) {
   try {
       await sql.connect(config);
-  
-      const result = await sql.query(`
-      UPDATE Exercises
-      SET Name = '${newName}', Weight = ${newWeight}, Sets = ${newSets}, Reps = ${newReps}, Date = '${newDate}'
+
+      const query = `UPDATE Exercises
+      SET Name = @name, Weight = @weight, Sets = @sets, Reps = @reps, Date = @date
       OUTPUT inserted.ExerciseID, inserted.Name, inserted.Weight, inserted.Sets, inserted.Reps, inserted.WorkoutID, inserted.Date
-      WHERE ExerciseID = ${exerciseID};`
-      );
+      WHERE ExerciseID = @exerciseid;`;
+      const request = new sql.Request();
+      request.input('name', sql.VarChar, newName);
+      request.input('weight', sql.Int, newWeight);
+      request.input('sets', sql.Int, newSets);
+      request.input('reps', sql.Int, newReps);
+      request.input('exerciseid', sql.Int, exerciseID);
+      request.input('date', sql.Date, newDate);
+  
+      const result = await request.query(query);
   
       const updateExercise = new Exercise(result.recordset[0].ExerciseID
         , result.recordset[0].Name
@@ -360,13 +410,18 @@ async function updateExercise(exerciseID, newName, newWeight, newSets, newReps, 
 async function updateCardio(cardioID, newName, newDistance, newDate) {
   try {
       await sql.connect(config);
-  
-      const result = await sql.query(`
-      UPDATE Cardio
-      SET Name = '${newName}', Distance = ${newDistance}, Date = '${newDate}'
+
+      const query = `UPDATE Cardio
+      SET Name = @name, Distance = @distance, Date = @date
       OUTPUT inserted.CardioID, inserted.Name, inserted.Distance, inserted.WorkoutID, inserted.Date
-      WHERE CardioID = ${cardioID};`
-      );
+      WHERE CardioID = @cardioid;`;
+      const request = new sql.Request();
+      request.input('name', sql.VarChar, newName);
+      request.input('distance', sql.Int, newDistance);
+      request.input('cardioid', sql.Int, cardioID);
+      request.input('date', sql.Date, newDate);
+  
+      const result = await request.query(query);
   
       const updateCardio= new Cardio(result.recordset[0].CardioID
         , result.recordset[0].Name
@@ -387,9 +442,11 @@ async function fetchMetric(UserID) {
   try {
     await sql.connect(config);
 
-    const result = await sql.query(
-      `select Metric from Users where UserID = '${UserID}'`
-      );
+    const query = `select Metric from Users where UserID = @userid`;
+    const request = new sql.Request();
+    request.input('userid', sql.Int, UserID);
+
+    const result = await request.query(query);
 
     const metric = result.recordset[0].Metric;
 
@@ -406,9 +463,11 @@ async function getWorkoutFromID(WorkoutID) {
   try {
     await sql.connect(config);
 
-    const result = await sql.query(
-      `select WorkoutID, Name, UserID, Date from Workout where WorkoutID = ${WorkoutID}`
-      );
+    const query = `select WorkoutID, Name, UserID, Date from Workout where WorkoutID = @workoutid`;
+    const request = new sql.Request();
+    request.input('workoutid', sql.Int, WorkoutID);
+
+    const result = await request.query(query);
 
     const workout = new Workout(result.recordset[0].WorkoutID
       , result.recordset[0].Name
