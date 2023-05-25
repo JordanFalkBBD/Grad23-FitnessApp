@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
-const dal = require("../models/workoutDAL");
 const date = require("date-and-time");
+const dal = require("../models/workoutDAL")
 
 router.get("/", (req, res) => {
-  req.session.userID = dal.getUserID();
+  req.session.userID = 
 
   res.sendFile(
     path.join(__dirname, "../views/components/workout-page/workoutPage.html")

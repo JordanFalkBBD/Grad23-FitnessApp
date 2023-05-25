@@ -80,7 +80,10 @@ function selectExerciseName(name, type) {
         metric_input.type = "number";
         metric_input.name = metric;
         metric_input.classList.add("metric_input");
+        metric_input.classList.add("text_input");
         add_exercise_metrics.appendChild(metric_input);
+        add_exercise_metrics.appendChild(metric_label);
+
       }
 
       let submit_button = document.createElement("input");
@@ -88,6 +91,7 @@ function selectExerciseName(name, type) {
       submit_button.type = "submit";
       submit_button.name = "submit";
       submit_button.value = "+";
+      submit_button.classList.add("metric_button");
       add_exercise_metrics.appendChild(submit_button);
     });
 

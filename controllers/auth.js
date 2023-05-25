@@ -4,6 +4,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 require('https').globalAgent.options.rejectUnauthorized = false;
 const config = require("../config");
+const db = require("../models/userDAL")
 
 // Google authentication
 passport.use(
@@ -14,8 +15,22 @@ passport.use(
             callbackURL: config.google_callback_url,
             passReqToCallback: true,
         },
-        function (request, accessToken, refreshToken, profile, done) {
-            // TODO: add/associate user to db records
+        async function (request, accessToken, refreshToken, profile, done) {
+            // Check if user exists
+            const userExists = db.checkUserExists(profile.email);
+
+            // If user exists, add user id to session
+            if (userExists) {
+                const userId = await db.getUserID(profile.email);
+                request.session.userId = userId[0].UserID;
+            } else {
+                // If user does not exist, add user to database, then add new user id to session
+                db.addNewUser(profile.email);
+                const userId = await db.getUserID(profile.email);
+                request.session.userId = userId[0].UserID;
+            }
+
+            // Continue with authentication flow
             return done(null, profile);
         }
     )

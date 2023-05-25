@@ -1,4 +1,5 @@
 .grid-container {
+  gap: 1em;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -9,6 +10,28 @@
   }
 }
 
+.section-title {
+  text-align: center;
+}
+
 table {
   width: 100%;
+}
+
+.summary-table th {
+  background: rgba(0, 0, 0, .5);
+  color: #03e9f4;
+}
+
+.summary-table tr {
+  text-align: center;
+  color: #03e9f4;
+}
+
+canvas {
+  background: linear-gradient(#141e30, #243b55);
+}
+
+.grid-container > section {
+  background: rgba(0, 0, 0, .5);
 }
