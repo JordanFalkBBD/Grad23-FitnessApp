@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
-const dal = require("../models/workoutDAL");
 const date = require("date-and-time");
+const server = require("../models/Server");
 
-router.get("/", (req, res) => {
-  req.session.userID = dal.getUserID();
+router.get("/", async (req, res) => {
+  req.session.userID = await server.fetchUserID(req.session.passport.user.email);
 
   res.sendFile(
     path.join(__dirname, "../views/components/workout-page/workoutPage.html")
@@ -18,19 +18,20 @@ function getWorkoutIndex(workoutID, workouts) {
 
 router.get("/next", async function (req, res) {
   // Retrieve the tag from our URL path
-  let workouts = dal.getWorkoutsForUser(req.session.userID).workouts;
+  const workouts = await server.fetchWorkouts(req.session.userID);
 
   let current = req.session.currentWorkoutId;
 
-  let next_index = getWorkoutIndex(current, workouts) - 1;
+  const next_index = getWorkoutIndex(current, workouts) - 1;
+
+  let exercises = await server.fetchExercise(current);
 
   if (next_index >= 0) {
     req.session.currentWorkoutId = workouts[next_index].id;
-  } else if (dal.getExercisesForWorkout(current.id).length > 0) {
-    req.session.currentWorkoutId = dal.addNewWorkout(
-      req.session.userID,
-      new Date(),
-      "New Workout"
+  } else if (exercises.length > 0) {
+    req.session.currentWorkoutId = server.addNewWorkout(
+      "New Workout",
+      req.session.userID
     ).id;
   }
 
@@ -38,11 +39,11 @@ router.get("/next", async function (req, res) {
 });
 
 router.get("/prev", async function (req, res) {
-  let workouts = dal.getWorkoutsForUser(req.session.userID).workouts;
+  const workouts = await server.fetchWorkouts(req.session.userID);
 
   let current = req.session.currentWorkoutId;
 
-  let prev_index = getWorkoutIndex(current, workouts) + 1;
+  const prev_index = getWorkoutIndex(current, workouts) + 1;
 
   if (prev_index < workouts.length) {
     req.session.currentWorkoutId = workouts[prev_index].id;
@@ -51,15 +52,15 @@ router.get("/prev", async function (req, res) {
   res.redirect("/workout");
 });
 
-router.get("/info", (req, res) => {
-  let workouts = dal.getWorkoutsForUser(req.session.userID).workouts;
+router.get("/info", async (req, res) => {
+  const workouts = await server.fetchWorkouts(req.session.userID);
 
   let workout = undefined;
   if (req.session.currentWorkoutId === undefined) {
     workout = workouts[0];
     req.session.currentWorkoutId = workout.id;
   } else {
-    workout = dal.getWorkoutFromID(req.session.currentWorkoutId);
+    workout = await server.getWorkoutFromID(req.session.currentWorkoutId);
   }
 
   workout.date = date.format(workout.date, "dddd, D MMM");
@@ -67,9 +68,10 @@ router.get("/info", (req, res) => {
   res.json(workout);
 });
 
-router.post("/update/name/:name", (req, res) => {
-  var name = req.params.name;
-  dal.updateWorkoutName(name);
+router.post("/update/name/:name", async (req, res) => {
+  const name = req.params.name;
+  const current = req.session.currentWorkoutId;
+  await server.updateWorkoutName(current, name);
 });
 
 module.exports = router;
