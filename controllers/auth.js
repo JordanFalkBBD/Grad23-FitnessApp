@@ -4,6 +4,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 require('https').globalAgent.options.rejectUnauthorized = false;
 const config = require("../config");
+const server = require("../models/Server");
 
 // Google authentication
 passport.use(
@@ -15,7 +16,7 @@ passport.use(
             passReqToCallback: true,
         },
         function (request, accessToken, refreshToken, profile, done) {
-            // TODO: add/associate user to db records
+            server.addNewUser(profile.email, 1);
             return done(null, profile);
         }
     )
