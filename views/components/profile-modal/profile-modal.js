@@ -132,7 +132,7 @@ class ProfileModal extends HTMLElement {
     signOut.type = "button";
     signOut.textContent = "Sign Out";
     signOut.onclick = () => {
-      history.pushState({}, "", "https://localhost:3000/logout");
+      history.pushState({}, "", "http://localhost:3000/logout");
       history.go(0);
     };
 
