@@ -2,7 +2,7 @@ var sql = require("mssql");
 const date = require("date-and-time");
 
 var config = {
-    user: 'sa',
+    user: 'root',
     password: "FitnessApp",
     server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
     database: "FitnessAppDB",
@@ -483,6 +483,65 @@ async function getWorkoutFromID(WorkoutID) {
   }
 }
 
+async function fetchExercisesForUser(userID) {
+  try {
+    await sql.connect(config);
+
+    const query = `select Exercises.ExerciseID, Exercises.Name, Exercises.Weight, Exercises.Sets, Exercises.Reps, Exercises.Date 
+    from Exercises 
+    left outer join Workout on Exercises.WorkoutID = Workout.WorkoutID
+    where Workout.UserID = @userid`;
+    const request = new sql.Request();
+    request.input('userid', sql.Int, userID);
+
+    const result = await request.query(query);
+
+    const exercises = result.recordset.map((row) => {
+      return new Exercise(
+        row.ExerciseID,
+        row.Name,
+        row.Weight,
+        row.Sets,
+        row.Reps,
+        row.Date
+      );
+    });
+
+    await sql.close();
+
+    return exercises;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error;
+  }
+}
+
+async function fetchCardioForUser(userID) {
+  try {
+    await sql.connect(config);
+
+    const query = `select Cardio.CardioID, Cardio.Name, Cardio.Distance, Cardio.Date 
+    from Cardio
+    left outer join Workout on Cardio.WorkoutID = Workout.WorkoutID
+    where Workout.UserID = @userid`;
+    const request = new sql.Request();
+    request.input('userid', sql.Int, userID);
+
+    const result = await request.query(query);
+
+    const exercises = result.recordset.map((row) => {
+      return new Cardio(row.CardioID, row.Name, row.Distance, row.Date);
+    });
+
+    await sql.close();
+
+    return exercises;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error;
+  }
+}
+
 
 module.exports = {
     fetchWorkouts,
@@ -501,4 +560,6 @@ module.exports = {
     updateCardio,
     fetchMetric,
     getWorkoutFromID,
+    fetchExercisesForUser,
+    fetchCardioForUser,
 };
