@@ -1,7 +1,7 @@
 var sql = require("mssql");
 
 var config = {
-  user: "root",
+  user: 'root',
   password: "FitnessApp",
   server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
   database: "FitnessAppDB",
@@ -56,8 +56,7 @@ async function fetchExercisesForUser(userID) {
 
     return exercises;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("fetchExercisesForUser");
   }
 }
 
@@ -79,8 +78,7 @@ async function fetchCardioForUser(userID) {
 
     return exercises;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("fetchCardioForUser");
   }
 }
 

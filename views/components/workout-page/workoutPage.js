@@ -1,3 +1,35 @@
+function addExercise(event) {
+  event.preventDefault();
+  console.log("Exercise Added")
+  const exercise_name_input = document.getElementById("add_exercise_name");
+  const exercise_name = exercise_name_input.value;
+  exercise_name_input.value = "";
+
+  let metrics = document.getElementsByClassName("metric_input");
+  let body = {exercise_name: exercise_name};
+  for (let metric of metrics) {
+    body[metric.name] = metric.value
+  }
+
+  let add_exercise_metrics = document.getElementById("add_exercise_metrics");
+
+  add_exercise_metrics.innerHTML = "";
+
+  fetch("/exercises/add", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify({
+      body
+    }),
+  }).then((json) => console.log(json));
+
+  // Reloads with hopefully that exercise added.
+  fillExercises();
+}
+
+
 function openModal() {
   const modal = document.getElementById("modal");
   modal.showModal();
@@ -8,9 +40,11 @@ async function getExercises() {
 }
 
 
-function updateWorkoutName() {
-  const name = document.getElementById("workout_name");
-  fetch("/workout/update/name/" + name);
+function updateWorkoutName(event) {
+  event.preventDefault();
+  const name = document.getElementById("workout_name").value;
+  fetch("/workout/update/name/" + name, {
+    method: "POST"}).then(response => console.log(response));
 }
 
 function searchExerciseNames() {
@@ -71,7 +105,6 @@ function selectExerciseName(name, type) {
       );
 
       add_exercise_metrics.innerHTML = "";
-      
       for (const metric of metrics) {
         let metric_label = document.createElement("label");
         metric_label.innerHTML = metric;
@@ -101,38 +134,6 @@ function selectExerciseName(name, type) {
   add_exercise_name_dropdown.innerHTML = "";
 }
 
-function addExercise() {
-  const exercise_name_input = document.getElementById("add_exercise_name");
-  const exercise_name = exercise_name_input.value;
-  exercise_name_input.value = "";
-
-  let metrics = document.getElementsByClassName("metric_input");
-  let values = [];
-  for (let metric of metrics) {
-    values.push({
-      unit: metric.name,
-      value: metric.value,
-    });
-  }
-
-  let add_exercise_metrics = document.getElementById("add_exercise_metrics");
-
-  add_exercise_metrics.innerHTML = "";
-
-  fetch("/exercises/add", {
-    method: "POST",
-    body: {
-      exercise_name: exercise_name,
-      metrics: metrics,
-    },
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    },
-  }).then((json) => console.log(json));
-
-  // Reloads with hopefully that exercise added.
-  fillExercises();
-}
 
 async function insertMetrics(parent, metrics) {
   for (let metric of metrics) {
@@ -172,7 +173,7 @@ async function fillExercises() {
 }
 
 async function fillWorkout() {
-  getWorkout().then((workout) => {
+  return getWorkout().then((workout) => {
     workout_date = document.getElementById("workout_date");
     workout_date.innerHTML = String(workout.date) + " : ";
     workout_name = document.getElementById("workout_name");
@@ -180,7 +181,8 @@ async function fillWorkout() {
   });
 }
 
-fillExercises();
+await fillWorkout();
+await fillExercises();
 
 function resizable (el, factor) {
   var int = Number(factor) || 7.7;
@@ -197,7 +199,7 @@ resizable(document.getElementById('workout_name'),10);
 document.getElementById("workout_name").onkeyup = updateWorkoutName
 document.getElementById("add_exercise_name").onkeyup = searchExerciseNames
 document.getElementById("profile-button").onclick = openModal
-
+document.getElementById("add_exercise_metrics").onsubmit = addExercise
 async function getWorkout() {
   return fetch("/workout/info").then((response) => response.json());
 }
@@ -207,5 +209,4 @@ const user = await response.json();
 
 const modal = document.getElementById("modal");
 modal.setState(user?.email, user?.metric);
-fillWorkout();
 console.log("SETUP!")

@@ -50,5 +50,5 @@ const options = {
 
 https.createServer(options, app).listen(config.port, function () {
   console.log(`Example app listening on port ${config.port}!`);
-  console.log(`Visit http://localhost:${config.port}`);
+  console.log(`Visit https://localhost:${config.port}`);
 });

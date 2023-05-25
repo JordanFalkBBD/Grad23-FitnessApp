@@ -1,14 +1,14 @@
 var sql = require("mssql");
 const date = require("date-and-time");
+const passport = require("passport");
 
 var config = {
-  user: "root",
+  user: 'root',
   password: "FitnessApp",
   server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
   database: "FitnessAppDB",
   trustServerCertificate: true,
 };
-
 
 class Exercise {
   constructor(id, name, metrics) {
@@ -42,7 +42,7 @@ function getMetricUnitsForExercise(type) {
   if (weights.includes(type)) {
     return ["kg", "reps"];
   } else if (cardio.includes(type)) {
-    return ["m"];
+    return ["km"];
   }
   return ["None"];
 }
@@ -50,21 +50,17 @@ function getMetricUnitsForExercise(type) {
 async function getWorkoutsForUser(user) {
   try {
     await sql.connect(config);
-
     const result = await sql.query(
-      `select WorkoutID, Name, UserID, Date from Workout where UserID = ${user}`
+      `select * from dbo.Workout where UserID = ${user}`
     );
 
-    const workouts = result.recordset.map((row) => {
-      return new Workout(row.WorkoutID, row.Name, row.Date);
-    });
+    const workouts = result.recordset.map((row) => new Workout(row.WorkoutID, row.Name, row.DateCreated));
 
     await sql.close();
 
     return workouts;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("getWorkoutsForUser");
   }
 }
 
@@ -73,19 +69,18 @@ async function getWorkoutFromID(WorkoutID) {
     await sql.connect(config);
 
     const result = await sql.query(
-      `select WorkoutID, Name, UserID, Date from Workout where WorkoutID = ${WorkoutID}`
+      `select * from Workout where 'WorkoutID' = ${WorkoutID}`
     );
 
     const workout = result.recordset.map((row) => {
-      return new Workout(row.WorkoutID, row.Name, row.Date);
+      return new Workout(row.WorkoutID, row.Name, row.DateCreated);
     })[0];
 
     await sql.close();
 
-    return workouts;
+    return workout;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("getWorkoutFromID", error);
   }
 }
 
@@ -94,12 +89,12 @@ async function getMetricsForExercise(exerciseID) {
     await sql.connect(config);
 
     const result = await sql.query(
-      `select Weight, Reps from Exercises where ExerciseID = ${exerciseID}`
+      `select Weight Reps from Exercises where ExerciseID = ${exerciseID}`
     );
 
     const exercises = result.recordset.map((row) => {
       return [
-        new Metric(row.Weight, "Kg"),
+        new Metric(row.Weight, "kg"),
         new Metric(row.Reps, "Reps"),
       ]
     }
@@ -118,7 +113,7 @@ async function getMetricsForExercise(exerciseID) {
 
       const exercises = result.recordset.map((row) => {
         return [
-          new Metric(row.Distance, "Km")
+          new Metric(row.Distance, "km")
         ]
       }
       );
@@ -128,44 +123,58 @@ async function getMetricsForExercise(exerciseID) {
       return exercises;
     } catch (error) {
 
-      console.error("Error:", error.message);
-      throw error;
+      console.error("getMetricsForExercise");
     }
   }
 }
 
-async function getExercisesForWorkout(workout) {
+async function getExercisesForWorkout(workoutID) {
   try {
     await sql.connect(config);
 
     const strength = await sql.query(
-      `select ExerciseID as ID, Name, Date from Exercises where WorkoutID = ${workout}`
+      `select * from Exercises where WorkoutID = ${workoutID}`
     );
+
+    await sql.connect(config);
 
     const cardio = await sql.query(
-      `select CardioID as ID, Name, Date from Cardio where WorkoutID = ${workout}`
+      `select * from Cardio where WorkoutID = ${workoutID}`
     );
 
-    const exercises = strength.recordset.map((row) => {
-      return new Exercise(
-        row.ID,
-        row.Name,
-        row.Date
-      );
-    }) + cardio.recordset.map((row) => {
-      return new Exercise(
-        row.ID,
-        row.Name,
-        row.Date
-      );
-    });
+    let exercises = []
+    if (strength.recordset.length > 0) {
+      exercises = [...exercises, ...strength.recordset.map((row) => {
+        return new Exercise(
+          row.ExerciseID,
+          row.Name,
+          [
+            new Metric("kg", row.Weight),
+            new Metric("Reps", row.Reps)
+          ]
+        );
+      })]
+    }
+
+    if (cardio.recordset.length > 0) {
+      exercises = [...exercises, ...cardio.recordset.map((row) => {
+        return new Exercise(
+          row.CardioID,
+          row.Name,
+          [
+            new Metric("km", row.Distance)
+          ]
+        );
+      })];
+    }
 
     await sql.close();
 
+    console.log(exercises)
+
     return exercises;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("getExercisesForWorkout", error);
   }
 }
 
@@ -173,99 +182,45 @@ async function addNewWorkout(UserID) {
   try {
     await sql.connect(config);
     const now = new Date();
+    const formattedDate = date.format(now, "YYYY-MM-DD");
+
+    console.log("USER ID IN ADD NEW WORKOUT: " + UserID)
 
     const insertResult = await sql.query(`
-        INSERT INTO Workout (Name, UserID, Date)
-        OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-        VALUES ('New Workout', ${UserID}, '${now}');`);
+        INSERT INTO dbo.Workout (Name, UserID, DateCreated)
+        OUTPUT inserted.WorkoutID
+        VALUES ('New Workout', ${UserID}, '${formattedDate}');`);
 
     const newWorkout = new Workout(
       insertResult.recordset[0].WorkoutID,
-      insertResult.recordset[0].Name,
-      insertResult.recordset[0].Date
+      'New Workout',
+      now
     );
 
     await sql.close();
 
     return newWorkout;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("addNewWorkout");
   }
 }
 
 async function updateWorkoutName(WorkoutID, newName) {
   try {
     await sql.connect(config);
+    
+    console.log("New name = " + newName);
+
 
     const result = await sql.query(`
         UPDATE Workout
-        SET Name = '${newName}'
-        OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
+        SET Name = "${newName}"
         WHERE WorkoutID = ${WorkoutID};`);
 
-    const updatedWorkout = new Workout(
-      result.recordset[0].WorkoutID,
-      result.recordset[0].Name,
-      result.recordset[0].Date
-    );
-
     await sql.close();
 
-    return updatedWorkout;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
-  }
-}
-
-async function addNewWorkout(name, user) {
-  try {
-    await sql.connect(config);
-    const now = new Date();
-    const formattedDate = date.format(now, "YYYY-MM-DD");
-
-    const insertResult = await sql.query(`
-        INSERT INTO Workout (Name, UserID, Date)
-        OUTPUT inserted.WorkoutID, inserted.Name, inserted.Date
-        VALUES ('${name}', ${user}, '${formattedDate}');`);
-
-    const newWorkout = new Workout(
-      insertResult.recordset[0].WorkoutID,
-      insertResult.recordset[0].Name,
-      insertResult.recordset[0].Date
-    );
-
-    await sql.close();
-
-    return newWorkout;
-  } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
-  }
-}
-
-async function addNewUser(email, metric) {
-  try {
-    await sql.connect(config);
-
-    const insertResult = await sql.query(`
-        INSERT INTO Users (Email, Metric)
-        OUTPUT inserted.UserID, inserted.Email, inserted.Metric
-        VALUES ('${email}', ${metric});`);
-
-    const newUser = new User(
-      insertResult.recordset[0].UserID,
-      insertResult.recordset[0].Email,
-      insertResult.recordset[0].Metric
-    );
-
-    await sql.close();
-
-    return newUser;
-  } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("updateWorkoutName", error);
   }
 }
 
@@ -279,7 +234,7 @@ async function addExercise(name, workoutID, weight = null, reps = null, distance
   } else {
     return addStrength(name, weight, reps, workoutID)
   }
-
+  console.error("EXERCISE NOT ADDED")
 
 }
 
@@ -307,8 +262,7 @@ async function addStrength(name, weight, reps, workoutID) {
 
     return newExercise;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("addStrength", error);
   }
 }
 
@@ -334,8 +288,7 @@ async function addCardio(name, distance, workoutID) {
 
     return newCardio;
   } catch (error) {
-    console.error("Error:", error.message);
-    throw error;
+    console.error("addCardio", error);
   }
 }
 

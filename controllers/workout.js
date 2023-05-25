@@ -2,23 +2,27 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const date = require("date-and-time");
-const dal = require("../models/workoutDAL")
+const workout_dal = require("../models/workoutDAL")
+const passport = require("passport");
+const user_dal = require("../models/userDAL")
 
-router.get("/", (req, res) => {
-  req.session.userID = 
 
+
+router.get("/", async (req, res) => {
   res.sendFile(
     path.join(__dirname, "../views/components/workout-page/workoutPage.html")
   );
 });
 
 function getWorkoutIndex(workoutID, workouts) {
+  console.log(workouts)
   return workouts.findIndex((workout) => workout.id == workoutID);
 }
 
 router.get("/next", async function (req, res) {
+  const UserID = await user_dal.getUserID(req.user.email)
   // Retrieve the tag from our URL path
-  let workouts = dal.getWorkoutsForUser(req.session.userID).workouts;
+  let workouts = await workout_dal.getWorkoutsForUser(UserID);
 
   let current = req.session.currentWorkoutId;
 
@@ -26,9 +30,9 @@ router.get("/next", async function (req, res) {
 
   if (next_index >= 0) {
     req.session.currentWorkoutId = workouts[next_index].id;
-  } else if (dal.getExercisesForWorkout(current.id).length > 0) {
-    req.session.currentWorkoutId = dal.addNewWorkout(
-      req.session.userID,
+  } else if (await workout_dal.getExercisesForWorkout(current.id).length > 0) {
+    req.session.currentWorkoutId = await workout_dal.addNewWorkout(
+      UserID,
       new Date(),
       "New Workout"
     ).id;
@@ -38,7 +42,9 @@ router.get("/next", async function (req, res) {
 });
 
 router.get("/prev", async function (req, res) {
-  let workouts = dal.getWorkoutsForUser(req.session.userID).workouts;
+  const UserID = await user_dal.getUserID(req.user.email)
+
+  let workouts = await workout_dal.getWorkoutsForUser(UserID);
 
   let current = req.session.currentWorkoutId;
 
@@ -51,15 +57,31 @@ router.get("/prev", async function (req, res) {
   res.redirect("/workout");
 });
 
-router.get("/info", (req, res) => {
-  let workouts = dal.getWorkoutsForUser(req.session.userID).workouts;
 
-  let workout = undefined;
-  if (req.session.currentWorkoutId === undefined) {
-    workout = workouts[0];
+router.get("/info", async (req, res) => {
+  const UserID = await user_dal.getUserID(req.user.email)
+  console.log("USER ID IN WORKOUT:? " + UserID);
+
+
+  let workouts = await workout_dal.getWorkoutsForUser(UserID);
+
+  let workout = undefined 
+
+  if (workouts === undefined || workouts.length == 0){
+    workout = await workout_dal.addNewWorkout(UserID)
     req.session.currentWorkoutId = workout.id;
   } else {
-    workout = dal.getWorkoutFromID(req.session.currentWorkoutId);
+    if (req.session.currentWorkoutId === undefined) {
+      workout = workouts[0];
+      console.log(workout)
+      // let date = String(workout.date).replace( /[-]/g, '/' );
+      // date = Date.parse( date );
+      // console.log(date)
+      // workout.date = date
+      req.session.currentWorkoutId = workout.id;
+    } else {
+      workout = await workout_dal.getWorkoutFromID(req.session.currentWorkoutId);
+    }
   }
 
   workout.date = date.format(workout.date, "dddd, D MMM");
@@ -69,7 +91,8 @@ router.get("/info", (req, res) => {
 
 router.post("/update/name/:name", (req, res) => {
   var name = req.params.name;
-  dal.updateWorkoutName(name);
+  workout_dal.updateWorkoutName(req.session.currentWorkoutId, name);
+  res.status(200);
 });
 
 module.exports = router;
