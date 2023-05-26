@@ -1,12 +1,5 @@
-var sql = require("mssql");
-
-var config = {
-    user: 'root',
-    password: "FitnessApp",
-    server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
-    database: "FitnessAppDB",
-    trustServerCertificate: true,
-};
+const sql = require("mssql");
+const config = require("./Server");
 
 class User {
     constructor(id, email, metric) {

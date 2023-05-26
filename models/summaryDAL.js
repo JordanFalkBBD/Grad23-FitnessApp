@@ -1,13 +1,5 @@
-var sql = require("mssql");
-
-var config = {
-  user: 'root',
-  password: "FitnessApp",
-  server: "mssqldb.cjovnczdjuek.eu-west-1.rds.amazonaws.com",
-  database: "FitnessAppDB",
-  trustServerCertificate: true,
-};
-
+const sql = require("mssql");
+const config = require("./Server");
 
 class Exercise {
   constructor(id, name, weight, sets, reps, date) {
@@ -20,8 +12,6 @@ class Exercise {
   }
 }
 
-
-
 class Cardio {
   constructor(id, name, distance, date) {
     this.id = id;
@@ -30,7 +20,6 @@ class Cardio {
     this.date = date;
   }
 }
-
 
 async function fetchExercisesForUser(userID) {
   try {
@@ -84,5 +73,5 @@ async function fetchCardioForUser(userID) {
 
 module.exports = {
   fetchExercisesForUser,
-  fetchCardioForUser
+  fetchCardioForUser,
 };

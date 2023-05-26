@@ -38,7 +38,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/metrics/:type", (req, res) => {
-  var type = req.params.type;
+  let type = req.params.type;
   res.json(dal.getMetricUnitsForExercise(type));
 });
 

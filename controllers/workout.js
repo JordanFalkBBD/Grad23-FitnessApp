@@ -90,7 +90,7 @@ router.get("/info", async (req, res) => {
 });
 
 router.post("/update/name/:name", (req, res) => {
-  var name = req.params.name;
+  let name = req.params.name;
   workout_dal.updateWorkoutName(req.session.currentWorkoutId, name);
   res.status(200);
 });
