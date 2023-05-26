@@ -41,7 +41,7 @@ async function fetchExercisesForUser(userID) {
       );
     });
 
-    await sql.close();
+    // await sql.close();
 
     return exercises;
   } catch (error) {
@@ -63,7 +63,7 @@ async function fetchCardioForUser(userID) {
       return new Cardio(row.CardioID, row.Name, row.Distance, row.Date);
     });
 
-    await sql.close();
+    // await sql.close();
 
     return exercises;
   } catch (error) {
