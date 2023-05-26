@@ -48,7 +48,7 @@ async function getWorkoutsForUser(user) {
 
     const workouts = result.recordset.map((row) => new Workout(row.WorkoutID, row.Name, row.DateCreated));
 
-    await sql.close();
+    // await sql.close();
 
     return workouts;
   } catch (error) {
@@ -68,7 +68,7 @@ async function getWorkoutFromID(WorkoutID) {
       return new Workout(row.WorkoutID, row.Name, row.DateCreated);
     })[0];
 
-    await sql.close();
+    // await sql.close();
 
     return workout;
   } catch (error) {
@@ -92,7 +92,7 @@ async function getMetricsForExercise(exerciseID) {
     }
     );
 
-    await sql.close();
+    // await sql.close();
 
     return exercises;
   } catch (ignored) {
@@ -110,7 +110,7 @@ async function getMetricsForExercise(exerciseID) {
       }
       );
 
-      await sql.close();
+      // await sql.close();
 
       return exercises;
     } catch (error) {
@@ -160,9 +160,9 @@ async function getExercisesForWorkout(workoutID) {
       })];
     }
 
-    await sql.close();
+    // await sql.close();
 
-    console.log(exercises)
+    // console.log(exercises)
 
     return exercises;
   } catch (error) {
@@ -189,7 +189,7 @@ async function addNewWorkout(UserID) {
       now
     );
 
-    await sql.close();
+    // await sql.close();
 
     return newWorkout;
   } catch (error) {
@@ -206,10 +206,10 @@ async function updateWorkoutName(WorkoutID, newName) {
 
     const result = await sql.query(`
         UPDATE Workout
-        SET Name = "${newName}"
+        SET Name = '${newName}'
         WHERE WorkoutID = ${WorkoutID};`);
 
-    await sql.close();
+    // await sql.close();
 
   } catch (error) {
     console.error("updateWorkoutName", error);
@@ -250,7 +250,7 @@ async function addStrength(name, weight, reps, workoutID) {
       insertResult.recordset[0].Date
     );
 
-    await sql.close();
+    // await sql.close();
 
     return newExercise;
   } catch (error) {
@@ -276,7 +276,7 @@ async function addCardio(name, distance, workoutID) {
       insertResult.recordset[0].Date
     );
 
-    await sql.close();
+    // await sql.close();
 
     return newCardio;
   } catch (error) {
