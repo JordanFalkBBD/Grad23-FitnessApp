@@ -10,6 +10,7 @@ body {
     font-family: sans-serif;
     background: linear-gradient(#141e30, #243b55);
     gap: 0rem;
+    align-items: center;
 }
 
 .navbar {
@@ -50,13 +51,12 @@ body {
     text-overflow: visible;
 }
 
-.input_text:focus {
-    outline: none;
+.input_text {
+    margin-bottom: 1rem;
 }
 
 .input_text:hover, .input_text:focus {
     outline: #03e9f4;
-    /* ANIMATION PWEEEEZE */
 }
 
 .dropdown_item {
@@ -78,6 +78,14 @@ body {
     border-radius: 10px;
     padding: 2rem;
     margin-bottom: 2rem;
+    width: 60%;
+    
+}
+
+@media (max-width: 768px) {
+    .box {
+        width: 100%;
+    }
 }
 
 ul {
@@ -99,8 +107,12 @@ ul {
 }
 
 #add_exercise_metrics {
-    padding: 0;
-    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.metric_button {
+    grid-column-start: span 2;
 }
 
 #workout_info {
@@ -110,7 +122,7 @@ ul {
 }
 
 #workout_name {
-    min-width: 1rem !important;
+    min-width: 1rem !important; /*Please not !important*/
     max-width: 70% !important;
     transition: width 0.05s;
     text-align: center;
@@ -121,11 +133,14 @@ ul {
 .profile-button {
     width: 4em;
     height: 4em;
+    background: linear-gradient(#141e30, #243b55);
+    border-radius: 0.3em;
+    border-color: white;
 }
 
 .metric {
-    text-align: right;
-    margin: 0
+    text-align: left;
+    margin: 0;
 }
 
 .exercise_set {
@@ -150,3 +165,16 @@ ul {
     width: 100%;
     margin-bottom: 0.5rem;
 }
+.summary-box {
+    display: flex;
+    height: 3rem;
+    justify-content: center;
+}
+
+a {
+    color: red;
+    text-align: center;
+}
+
+
+

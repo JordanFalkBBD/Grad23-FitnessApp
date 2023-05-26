@@ -22,8 +22,8 @@ GO
 -- Create Workout table
 USE FitnessAppDB;
 CREATE TABLE [dbo].[Workout](
-    [WorkoutID] [int] IDENTITY(1,1) NOT NULL,
-    [Name] [varchar](100) UNIQUE NOT NULL,
+    [WorkoutID] [int] IDENTITY(1,1) UNIQUE NOT NULL,
+    [Name] [varchar](100) NOT NULL,
 	[UserID] [int] NOT NULL,
 	[Date] [Date] NULL
 );

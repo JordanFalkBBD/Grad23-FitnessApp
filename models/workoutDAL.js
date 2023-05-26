@@ -1,12 +1,6 @@
-const server = require("../models/Server");
-
-class Metric {
-  constructor(id, unit, value) {
-    this.id = id;
-    this.unit = unit;
-    this.value = value;
-  }
-}
+const sql = require("mssql");
+const date = require("date-and-time");
+const config = require("./Server");
 
 class Exercise {
   constructor(id, name, metrics) {
@@ -24,6 +18,13 @@ class Workout {
   }
 }
 
+class Metric {
+  constructor(unit, value) {
+    this.unit = unit;
+    this.value = value;
+  }
+}
+
 const cardio = ["cardio"];
 
 const weights = ["olympic_weightlifting", "powerlifting", "strength"];
@@ -33,65 +34,263 @@ function getMetricUnitsForExercise(type) {
   if (weights.includes(type)) {
     return ["kg", "reps"];
   } else if (cardio.includes(type)) {
-    return ["m"];
+    return ["km"];
   }
   return ["None"];
 }
 
-function getMetricsForExercise(ExerciseID) {
-  return [new Metric(5, "reps", 10), new Metric(4, "kg", 10)];
-}
+async function getWorkoutsForUser(user) {
+  try {
+    await sql.connect(config);
+    const result = await sql.query(
+      `select * from dbo.Workout where UserID = ${user}`
+    );
 
-function getExercisesForWorkout(WorkoutID) {
-  // newest to oldest exercise in workout
-  server.fetchExercise(WorkoutID)
-  .then(exercises => {
-    return exercises;
-  })
-  .catch(error => {
-  });
-}
+    const workouts = result.recordset.map((row) => new Workout(row.WorkoutID, row.Name, row.DateCreated));
 
-function getWorkoutsForUser(UserID) {
-  let date = new Date();
-  return {
-    workouts: [
-      new Workout(2, "Upper Body", date),
-      new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1))),
-    ],
-  };
-}
+    await sql.close();
 
-function getWorkoutFromID(WorkoutID) {
-  let date = new Date();
-
-  if (WorkoutID == 2) {
-    return new Workout(2, "Upper Body", date);
+    return workouts;
+  } catch (error) {
+    console.error("getWorkoutsForUser");
   }
-
-  return new Workout(1, "Legs", new Date(date.setDate(date.getDate() - 1)));
 }
 
-function addNewWorkout(userID, date, name) {
-  let workout = new Workout(99, name, date); //newly created workout's ID
+async function getWorkoutFromID(WorkoutID) {
+  try {
+    await sql.connect(config);
 
-  return workout;
+    const result = await sql.query(
+      `select * from Workout where 'WorkoutID' = ${WorkoutID}`
+    );
+
+    const workout = result.recordset.map((row) => {
+      return new Workout(row.WorkoutID, row.Name, row.DateCreated);
+    })[0];
+
+    await sql.close();
+
+    return workout;
+  } catch (error) {
+    console.error("getWorkoutFromID", error);
+  }
 }
 
-function updateWorkoutName(WorkoutID, newName) {
-  //TODO: name changed
+async function getMetricsForExercise(exerciseID) {
+  try {
+    await sql.connect(config);
+
+    const result = await sql.query(
+      `select Weight Reps from Exercises where ExerciseID = ${exerciseID}`
+    );
+
+    const exercises = result.recordset.map((row) => {
+      return [
+        new Metric(row.Weight, "kg"),
+        new Metric(row.Reps, "Reps"),
+      ]
+    }
+    );
+
+    await sql.close();
+
+    return exercises;
+  } catch (ignored) {
+    try {
+      await sql.connect(config);
+
+      const result = await sql.query(
+        `select Distance from Cardio where ExerciseID = ${exerciseID}`
+      );
+
+      const exercises = result.recordset.map((row) => {
+        return [
+          new Metric(row.Distance, "km")
+        ]
+      }
+      );
+
+      await sql.close();
+
+      return exercises;
+    } catch (error) {
+
+      console.error("getMetricsForExercise");
+    }
+  }
 }
 
-function getUserID() {
-  return 0;
+async function getExercisesForWorkout(workoutID) {
+  try {
+    await sql.connect(config);
+
+    const strength = await sql.query(
+      `select * from Exercises where WorkoutID = ${workoutID}`
+    );
+
+    await sql.connect(config);
+
+    const cardio = await sql.query(
+      `select * from Cardio where WorkoutID = ${workoutID}`
+    );
+
+    let exercises = []
+    if (strength.recordset.length > 0) {
+      exercises = [...exercises, ...strength.recordset.map((row) => {
+        return new Exercise(
+          row.ExerciseID,
+          row.Name,
+          [
+            new Metric("kg", row.Weight),
+            new Metric("Reps", row.Reps)
+          ]
+        );
+      })]
+    }
+
+    if (cardio.recordset.length > 0) {
+      exercises = [...exercises, ...cardio.recordset.map((row) => {
+        return new Exercise(
+          row.CardioID,
+          row.Name,
+          [
+            new Metric("km", row.Distance)
+          ]
+        );
+      })];
+    }
+
+    await sql.close();
+
+    console.log(exercises)
+
+    return exercises;
+  } catch (error) {
+    console.error("getExercisesForWorkout", error);
+  }
+}
+
+async function addNewWorkout(UserID) {
+  try {
+    await sql.connect(config);
+    const now = new Date();
+    const formattedDate = date.format(now, "YYYY-MM-DD");
+
+    console.log("USER ID IN ADD NEW WORKOUT: " + UserID)
+
+    const insertResult = await sql.query(`
+        INSERT INTO dbo.Workout (Name, UserID, DateCreated)
+        OUTPUT inserted.WorkoutID
+        VALUES ('New Workout', ${UserID}, '${formattedDate}');`);
+
+    const newWorkout = new Workout(
+      insertResult.recordset[0].WorkoutID,
+      'New Workout',
+      now
+    );
+
+    await sql.close();
+
+    return newWorkout;
+  } catch (error) {
+    console.error("addNewWorkout");
+  }
+}
+
+async function updateWorkoutName(WorkoutID, newName) {
+  try {
+    await sql.connect(config);
+    
+    console.log("New name = " + newName);
+
+
+    const result = await sql.query(`
+        UPDATE Workout
+        SET Name = "${newName}"
+        WHERE WorkoutID = ${WorkoutID};`);
+
+    await sql.close();
+
+  } catch (error) {
+    console.error("updateWorkoutName", error);
+  }
+}
+
+async function addExercise(name, workoutID, weight = null, reps = null, distance = null) {
+  if (weight === null && reps === null) {
+    if (distance === null) {
+      return null;
+    } else {
+      return addCardio(name, distance, workoutID)
+    }
+  } else {
+    return addStrength(name, weight, reps, workoutID)
+  }
+  console.error("EXERCISE NOT ADDED")
+
+}
+
+async function addStrength(name, weight, reps, workoutID) {
+  try {
+    await sql.connect(config);
+    const now = new Date();
+    const formattedDate = date.format(now, "YYYY-MM-DD");
+
+    const insertResult = await sql.query(`
+        INSERT INTO Exercises (Name, Weight, Sets, Reps, WorkoutID, Date)
+        OUTPUT inserted.ExerciseID, inserted.Name, inserted.Weight, inserted.Sets, inserted.Reps, inserted.WorkoutID, inserted.Date
+        VALUES ('${name}', ${weight}, ${0}, ${reps}, ${workoutID}, '${formattedDate}');`);
+
+    const newExercise = new Exercise(
+      insertResult.recordset[0].ExerciseID,
+      insertResult.recordset[0].Name,
+      insertResult.recordset[0].Weight,
+      insertResult.recordset[0].Sets,
+      insertResult.recordset[0].Reps,
+      insertResult.recordset[0].Date
+    );
+
+    await sql.close();
+
+    return newExercise;
+  } catch (error) {
+    console.error("addStrength", error);
+  }
+}
+
+async function addCardio(name, distance, workoutID) {
+  try {
+    await sql.connect(config);
+    const now = new Date();
+    const formattedDate = date.format(now, "YYYY-MM-DD");
+
+    const insertResult = await sql.query(`
+      INSERT INTO Cardio (Name, Distance, WorkoutID, Date)
+      OUTPUT inserted.CardioID, inserted.Name, inserted.Distance, inserted.WorkoutID, inserted.Date
+      VALUES ('${name}', ${distance}, ${workoutID}, '${formattedDate}');`);
+
+    const newCardio = new Cardio(
+      insertResult.recordset[0].CardioID,
+      insertResult.recordset[0].Name,
+      insertResult.recordset[0].Distance,
+      insertResult.recordset[0].Date
+    );
+
+    await sql.close();
+
+    return newCardio;
+  } catch (error) {
+    console.error("addCardio", error);
+  }
 }
 
 module.exports = {
-  getExercisesForWorkout,
-  getWorkoutsForUser,
-  getWorkoutFromID,
   getMetricUnitsForExercise,
+  getMetricsForExercise,
+  getWorkoutsForUser,
+  getExercisesForWorkout,
+  getWorkoutFromID,
   addNewWorkout,
   updateWorkoutName,
-  getUserID,
+  addExercise
 };

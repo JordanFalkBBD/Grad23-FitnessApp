@@ -1,18 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const dal = require("../models/Server");
-const config = require("../config");
+const dal = require("../models/userDAL");
 
-router.get("/", (req, res) => {
-  const userID = dal.fetchUserID(req.session.email).then();
-  const data = dal.fetchUser(userID).then();
-  res.json(data);
+router.get("/", async (req, res) => {
+  const data = await dal.getUser(req.session.userID);
+  res.json(JSON.stringify(data));
 });
 
-router.post("/update/:metric/:email", (req, res) => {
-  const userID = dal.fetchUserID(req.session.email).then();
-  const data = dal.updateUser(userID, req.params.email,req.params.metric).then();
-  res.json(data);
+router.post("/update/:metric/:email", async (req, res) => {
+  const data = await dal.updateUser(req.session.userID, req.params.email, req.params.metric);
+  res.status(200);
 });
 
 module.exports = router;
