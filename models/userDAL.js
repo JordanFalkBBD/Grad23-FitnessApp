@@ -23,7 +23,7 @@ async function addNewUser(email, metric = 1) {
             insertResult.recordset[0].Metric
         );
 
-        await sql.close();
+        // await sql.close();
 
         return newUser;
     } catch (error) {
@@ -65,7 +65,7 @@ async function getUserID(email) {
 
         const userID = result.recordset[0].UserID;
 
-        await sql.close();
+        // await sql.close();
 
         return userID;
     } catch (no_user) {
@@ -87,7 +87,7 @@ async function getUser(user) {
             return new User(row.UserID, row.Email, row.Metric);
         });
 
-        await sql.close();
+        // await sql.close();
 
         return users;
     } catch (error) {
