@@ -162,7 +162,7 @@ async function getExercisesForWorkout(workoutID) {
 
     await sql.close();
 
-    console.log(exercises)
+    // console.log(exercises)
 
     return exercises;
   } catch (error) {
@@ -206,7 +206,7 @@ async function updateWorkoutName(WorkoutID, newName) {
 
     const result = await sql.query(`
         UPDATE Workout
-        SET Name = "${newName}"
+        SET Name = '${newName}'
         WHERE WorkoutID = ${WorkoutID};`);
 
     await sql.close();
