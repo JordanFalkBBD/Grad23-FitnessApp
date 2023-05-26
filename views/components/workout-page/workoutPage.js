@@ -174,9 +174,9 @@ async function fillExercises() {
 
 async function fillWorkout() {
   return getWorkout().then((workout) => {
-    workout_date = document.getElementById("workout_date");
+    let workout_date = document.getElementById("workout_date");
     workout_date.innerHTML = String(workout.date) + " : ";
-    workout_name = document.getElementById("workout_name");
+    let workout_name = document.getElementById("workout_name");
     workout_name.value = workout.name;
   });
 }
