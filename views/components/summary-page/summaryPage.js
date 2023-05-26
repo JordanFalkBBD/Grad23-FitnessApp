@@ -23,8 +23,8 @@ async function getCardio(userID) {
     });
 }
 
-makeChart(await getCardio(1));
-makeTable(await getExercises(1));
+makeChart(await getCardio(8));
+makeTable(await getExercises(8));
 
 function makeChart(data) {
   data = JSON.parse(data);

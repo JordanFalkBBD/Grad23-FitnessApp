@@ -37,7 +37,7 @@ app.use("/summary", isLoggedIn, summary);
 app.use("/workout", isLoggedIn, workout);
 app.use("/exercises", exercises);
 app.use("/ninja", ninja);
-app.use("/user", user);
+app.use("/users", user);
 
 // Google authentication routes
 app.use("/auth", auth);
@@ -50,6 +50,5 @@ const options = {
 
 https.createServer(options, app).listen(config.port, function () {
   console.log(`Example app listening on port ${config.port}!`);
-  console.log(`Visit http://localhost:${config.port}`);
+  console.log(`Visit https://localhost:${config.port}`);
 });
-
